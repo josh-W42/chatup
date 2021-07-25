@@ -1,10 +1,11 @@
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
-import { StyledBadge } from "./styles";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
+import { StyledBadge } from "./styles";
 import { useState } from "react";
-import { ChatVisual } from "../../actions/chatVisual";
+import { ChatVisual } from "../../actions";
+import { useEffect } from "react";
 
 const ChatList = (): JSX.Element => {
   const [fakeChats, setFakeChats] = useState([]);

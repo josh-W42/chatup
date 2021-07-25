@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -10,17 +10,30 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
 import { DrawerHeader, AppBar, Drawer } from "./styles";
 import ChatList from "../ChatList";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import { StoreState } from "../../reducers";
+import { connect } from "react-redux";
+import { useEffect } from "react";
+import { openNewChat, closeNewChat } from "../../actions";
 
-const ChatDrawer = (): JSX.Element => {
+interface DrawerProps {
+  newChatOpen: boolean;
+  openNewChat: typeof openNewChat;
+  closeNewChat: typeof closeNewChat;
+}
+
+const _ChatDrawer = (props: DrawerProps): JSX.Element => {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
 
   const handleDrawerTrigger = () => {
     setOpen((prev) => !prev);
+  };
+
+  const handleNewChatClick = () => {
+    props.openNewChat();
   };
 
   return (
@@ -62,6 +75,7 @@ const ChatDrawer = (): JSX.Element => {
           size="large"
           variant="contained"
           color="primary"
+          onClick={handleNewChatClick}
         >
           New Chat
         </Button>
@@ -74,5 +88,15 @@ const ChatDrawer = (): JSX.Element => {
     </Box>
   );
 };
+
+const mapStateToProps = ({
+  newChatOpen,
+}: StoreState): { newChatOpen: boolean } => {
+  return { newChatOpen };
+};
+
+const ChatDrawer = connect(mapStateToProps, { openNewChat, closeNewChat })(
+  _ChatDrawer
+);
 
 export default ChatDrawer;

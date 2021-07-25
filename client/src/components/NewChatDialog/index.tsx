@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -6,10 +5,19 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
+import { StoreState } from "../../reducers";
+import { connect } from "react-redux";
+import { openNewChat, closeNewChat } from "../../actions";
 
-const NewChatDialog = (): JSX.Element => {
-  const [open, setOpen] = React.useState(false);
+interface DialogProps {
+  newChatOpen: boolean;
+  openNewChat: typeof openNewChat;
+  closeNewChat: typeof closeNewChat;
+}
+
+const _NewChatDialog = (props: DialogProps): JSX.Element => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -17,7 +25,8 @@ const NewChatDialog = (): JSX.Element => {
     <>
       <Dialog
         fullScreen={fullScreen}
-        open={open}
+        open={props.newChatOpen}
+        onClose={props.closeNewChat}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
@@ -30,12 +39,26 @@ const NewChatDialog = (): JSX.Element => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus>Disagree</Button>
-          <Button autoFocus>Agree</Button>
+          <Button autoFocus onClick={props.closeNewChat}>
+            Disagree
+          </Button>
+          <Button autoFocus onClick={props.closeNewChat}>
+            Agree
+          </Button>
         </DialogActions>
       </Dialog>
     </>
   );
 };
+
+const mapStateToProps = ({
+  newChatOpen,
+}: StoreState): { newChatOpen: boolean } => {
+  return { newChatOpen };
+};
+
+const NewChatDialog = connect(mapStateToProps, { openNewChat, closeNewChat })(
+  _NewChatDialog
+);
 
 export default NewChatDialog;
