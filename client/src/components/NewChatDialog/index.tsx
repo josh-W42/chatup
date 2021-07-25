@@ -2,9 +2,14 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 import { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { StoreState } from "../../reducers";
@@ -17,34 +22,110 @@ interface DialogProps {
   closeNewChat: typeof closeNewChat;
 }
 
+interface DialogState {
+  name: string;
+  imageUrl: string;
+}
+
 const _NewChatDialog = (props: DialogProps): JSX.Element => {
+  const [values, setValues] = useState<DialogState>({
+    name: "",
+    imageUrl: "",
+  });
+
+  const handleChange =
+    (prop: keyof DialogState) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
+  const handleClose = () => {
+    props.closeNewChat();
+    reset();
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+    if (fileList && fileList.length > 0) {
+      setValues({ ...values, imageUrl: URL.createObjectURL(fileList[0]) });
+    }
+  };
+
+  const reset = () => {
+    setValues({
+      name: "",
+      imageUrl: "",
+    });
+  };
+
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <>
       <Dialog
         fullScreen={fullScreen}
         open={props.newChatOpen}
-        onClose={props.closeNewChat}
+        onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {"Use Google's location service?"}
+          {"Start A New Chat"}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
+        <DialogContent sx={{ m: 5 }}>
+          <FormControl sx={{ width: "100%" }} variant="standard">
+            <InputLabel htmlFor="name">Chat Name</InputLabel>
+            <Input
+              id="name"
+              type="text"
+              value={values.name}
+              onChange={handleChange("name")}
+            />
+          </FormControl>
+          <FormControl sx={{ marginY: 5, width: "100%" }} variant="standard">
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Grid item>
+                <Avatar sx={{ width: 56, height: 56 }} src={values.imageUrl} />
+              </Grid>
+              <Grid item>
+                <Typography variant="h6" component="p">
+                  Chat Image
+                </Typography>
+                <input
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  id="chatImage"
+                  type="file"
+                />
+              </Grid>
+            </Grid>
+          </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={props.closeNewChat}>
-            Disagree
-          </Button>
-          <Button autoFocus onClick={props.closeNewChat}>
-            Agree
-          </Button>
+          <Grid container justifyContent="space-between">
+            <Button
+              autoFocus
+              size="large"
+              color="error"
+              variant="contained"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              autoFocus
+              size="large"
+              variant="contained"
+              onClick={handleClose}
+            >
+              Create
+            </Button>
+          </Grid>
         </DialogActions>
       </Dialog>
     </>
