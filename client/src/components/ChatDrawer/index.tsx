@@ -1,22 +1,23 @@
 import { useState } from "react";
-import { useTheme } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Toolbar from "@material-ui/core/Toolbar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import { DrawerHeader, AppBar, Drawer } from "./styles";
 import ChatList from "../ChatList";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
-import { useEffect } from "react";
 import { openNewChat, closeNewChat } from "../../actions";
+import { Route, Switch } from "react-router-dom";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import {
+  Box,
+  Toolbar,
+  Typography,
+  Divider,
+  IconButton,
+  Avatar,
+  Button,
+  useTheme,
+} from "@material-ui/core";
 
 interface DrawerProps {
   newChatOpen: boolean;
@@ -84,6 +85,9 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
+        <Switch>
+          <Route exact path="/chats/:id"></Route>
+        </Switch>
       </Box>
     </Box>
   );

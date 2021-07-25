@@ -1,13 +1,9 @@
-import ListItem from "@material-ui/core/ListItem";
-import List from "@material-ui/core/List";
-import Avatar from "@material-ui/core/Avatar";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import { StyledBadge } from "./styles";
 import { ChatPartial } from "../../actions";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 import { timeSinceDate } from "../../util/time";
+import { ListItem, List, Avatar, Typography, Grid } from "@material-ui/core";
 
 interface ChatListProps {
   chatPartials: ChatPartial[];

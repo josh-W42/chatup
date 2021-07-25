@@ -1,15 +1,3 @@
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import React, { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { StoreState } from "../../reducers";
@@ -20,6 +8,20 @@ import {
   addChatPartial,
   ChatPartial,
 } from "../../actions";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Input,
+  InputLabel,
+  useMediaQuery,
+  Grid,
+  Typography,
+  Avatar,
+} from "@material-ui/core";
 
 interface DialogProps {
   newChatOpen: boolean;
