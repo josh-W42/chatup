@@ -12,6 +12,8 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Avatar from "@material-ui/core/Avatar";
 import { DrawerHeader, AppBar, Drawer } from "./styles";
 import ChatList from "../ChatList";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
 const ChatDrawer = (): JSX.Element => {
   const theme = useTheme();
@@ -54,7 +56,15 @@ const ChatDrawer = (): JSX.Element => {
             )}
           </IconButton>
         </DrawerHeader>
-        <Divider />
+
+        <Button
+          sx={{ fontSize: ".75rem", marginY: 1 }}
+          size="large"
+          variant="contained"
+          color="primary"
+        >
+          New Chat
+        </Button>
         <ChatList />
         <Divider />
       </Drawer>
