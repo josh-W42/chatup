@@ -3,37 +3,31 @@ import List from "@material-ui/core/List";
 import { StyledBadge } from "./styles";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
+import { useState } from "react";
+import { ChatVisual } from "../../actions/chatVisual";
 
 const ChatList = (): JSX.Element => {
-  return (
-    <List>
-      <ListItem button>
-        <StyledBadge
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          variant="dot"
-        >
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-        </StyledBadge>
-        <Typography sx={{ m: 2 }} variant="h6" component="p">
-          Chat Item 1
-        </Typography>
-      </ListItem>
-      <ListItem button>
-        <StyledBadge
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          variant="dot"
-          invisible={true}
-        >
-          <Avatar alt="Sharp" src="/static/images/avatar/1.jpg" />
-        </StyledBadge>
-        <Typography sx={{ m: 2 }} variant="h6" component="p">
-          Chat Item 1
-        </Typography>
-      </ListItem>
-    </List>
-  );
+  const [fakeChats, setFakeChats] = useState([]);
+
+  const renderChats = (): JSX.Element[] =>
+    fakeChats.map((chat: ChatVisual) => {
+      return (
+        <ListItem button key={chat.id}>
+          <StyledBadge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            variant="dot"
+          >
+            <Avatar alt={chat.name} src={chat.imageUrl} />
+          </StyledBadge>
+          <Typography sx={{ m: 2 }} variant="h6" component="p">
+            {chat.name}
+          </Typography>
+        </ListItem>
+      );
+    });
+
+  return <List>{renderChats()}</List>;
 };
 
 export default ChatList;
