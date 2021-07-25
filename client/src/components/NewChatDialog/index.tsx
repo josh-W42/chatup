@@ -14,12 +14,18 @@ import { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
-import { openNewChat, closeNewChat } from "../../actions";
+import {
+  openNewChat,
+  closeNewChat,
+  addChatPartial,
+  ChatPartial,
+} from "../../actions";
 
 interface DialogProps {
   newChatOpen: boolean;
   openNewChat: typeof openNewChat;
   closeNewChat: typeof closeNewChat;
+  addChatPartial: typeof addChatPartial;
 }
 
 interface DialogState {
@@ -49,6 +55,18 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
     if (fileList && fileList.length > 0) {
       setValues({ ...values, imageUrl: URL.createObjectURL(fileList[0]) });
     }
+  };
+
+  const handleSubmit = () => {
+    const newChat: ChatPartial = {
+      id: Math.floor(Math.random() * 100),
+      name: values.name,
+      imageUrl: values.imageUrl,
+      lastUpdated: new Date(),
+    };
+    props.addChatPartial(newChat);
+    props.closeNewChat();
+    reset();
   };
 
   const reset = () => {
@@ -121,7 +139,7 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
               autoFocus
               size="large"
               variant="contained"
-              onClick={handleClose}
+              onClick={handleSubmit}
             >
               Create
             </Button>
@@ -138,8 +156,10 @@ const mapStateToProps = ({
   return { newChatOpen };
 };
 
-const NewChatDialog = connect(mapStateToProps, { openNewChat, closeNewChat })(
-  _NewChatDialog
-);
+const NewChatDialog = connect(mapStateToProps, {
+  openNewChat,
+  closeNewChat,
+  addChatPartial,
+})(_NewChatDialog);
 
 export default NewChatDialog;

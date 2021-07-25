@@ -4,14 +4,22 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { StyledBadge } from "./styles";
 import { useState } from "react";
-import { ChatVisual } from "../../actions";
+import { ChatPartial } from "../../actions";
+import { StoreState } from "../../reducers";
+import { connect } from "react-redux";
 import { useEffect } from "react";
 
-const ChatList = (): JSX.Element => {
-  const [fakeChats, setFakeChats] = useState([]);
+interface ChatListProps {
+  chatPartials: ChatPartial[];
+}
+
+const _ChatList = (props: ChatListProps): JSX.Element => {
+  useEffect(() => {
+    console.log(props);
+  }, [props.chatPartials]);
 
   const renderChats = (): JSX.Element[] =>
-    fakeChats.map((chat: ChatVisual) => {
+    props.chatPartials.map((chat: ChatPartial) => {
       return (
         <ListItem button key={chat.id}>
           <StyledBadge
@@ -30,5 +38,13 @@ const ChatList = (): JSX.Element => {
 
   return <List>{renderChats()}</List>;
 };
+
+const mapStateToProps = ({
+  chatPartials,
+}: StoreState): { chatPartials: ChatPartial[] } => {
+  return { chatPartials };
+};
+
+const ChatList = connect(mapStateToProps)(_ChatList);
 
 export default ChatList;
