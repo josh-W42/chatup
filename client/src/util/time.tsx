@@ -1,7 +1,7 @@
 import { ListItem, Typography, Grid } from "@material-ui/core";
 
 /*
-  Helper function for displaying the amount of time
+  Helper function for displaying the difference between dates.
 */
 export const timeSinceDate = (pastDate: Date): string => {
   const currentTime = new Date();
