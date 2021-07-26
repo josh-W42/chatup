@@ -1,5 +1,5 @@
-import React from "react";
 import { Switch, Route } from "react-router-dom";
+import AuthPage from "./pages/AuthPage";
 import ChatDashboard from "./pages/ChatDashboard";
 import Home from "./pages/Home";
 
@@ -10,6 +10,7 @@ function App(props: AppProps): JSX.Element {
     <>
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route path="/auth" component={AuthPage} />
         <Route path="/chats" component={ChatDashboard} />
       </Switch>
     </>

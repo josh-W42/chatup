@@ -6,14 +6,8 @@ import {
   useTheme,
   Input,
 } from "@material-ui/core";
-import { ContentPasteOffSharp } from "@material-ui/icons";
 import SendIcon from "@material-ui/icons/Send";
-import React, {
-  SetStateAction,
-  useState,
-  useEffect,
-  KeyboardEventHandler,
-} from "react";
+import React, { SetStateAction, useState } from "react";
 import { connect } from "react-redux";
 import { Chat, Message, addMessage } from "../../actions";
 import { StoreState } from "../../reducers";

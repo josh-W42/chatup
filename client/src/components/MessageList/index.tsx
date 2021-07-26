@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Chat, fetchChat, Message } from "../../actions";
 import { addTimeElement } from "../../util/time";
 import { useRouteMatch } from "react-router-dom";
@@ -14,7 +14,6 @@ import {
 } from "@material-ui/core";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
-import { useRef } from "react";
 
 interface URLParams {
   id?: string;
