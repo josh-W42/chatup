@@ -20,6 +20,11 @@ export interface DeleteMessageAction {
   payload: number;
 }
 
+export interface FetchChatAction {
+  type: ActionTypes.fetchChat;
+  payload: Chat;
+}
+
 export const addMessage = (
   newMessage: Message,
   chatId: number
@@ -37,5 +42,21 @@ export const deleteMessage = (
   return {
     type: ActionTypes.deleteMessage,
     payload: id,
+  };
+};
+
+export const fetchChat = (id: number): FetchChatAction => {
+  const emptyChat = {
+    id: id,
+    name: "placeholder",
+    imageUrl: "broken",
+    lastUpdated: new Date(),
+    messages: [],
+    members: [],
+  };
+
+  return {
+    type: ActionTypes.fetchChat,
+    payload: emptyChat,
   };
 };

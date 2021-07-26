@@ -7,8 +7,10 @@ import {
   Input,
 } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
-import React, { useState } from "react";
-import { Message } from "../../actions";
+import React, { SetStateAction, useState } from "react";
+import { connect } from "react-redux";
+import { Chat, Message, addMessage } from "../../actions";
+import { StoreState } from "../../reducers";
 import { calculateWidth } from "./styles";
 
 interface ActionBarState {
@@ -19,9 +21,12 @@ interface ActionBarState {
 
 interface ActionBarProps {
   isDrawerOpen: boolean;
+  addMessage: typeof addMessage;
+  chatUpdated: React.Dispatch<SetStateAction<boolean>>;
+  chat: Chat;
 }
 
-const BottomActionBar = (props: ActionBarProps) => {
+const _BottomActionBar = (props: ActionBarProps) => {
   const [values, setValues] = useState<ActionBarState>({
     content: "",
     sentGraphic: false,
@@ -42,6 +47,18 @@ const BottomActionBar = (props: ActionBarProps) => {
       graphicUrls: values.graphicUrls,
       createdAt: new Date(),
     };
+
+    props.addMessage(newMessage, props.chat.id);
+    props.chatUpdated(true);
+    reset();
+  };
+
+  const reset = () => {
+    setValues({
+      content: "",
+      sentGraphic: false,
+      graphicUrls: [],
+    });
   };
 
   const handleChange =
@@ -98,5 +115,13 @@ const BottomActionBar = (props: ActionBarProps) => {
     </Paper>
   );
 };
+
+const mapStateToProps = ({ chat }: StoreState): { chat: Chat } => {
+  return { chat };
+};
+
+const BottomActionBar = connect(mapStateToProps, {
+  addMessage,
+})(_BottomActionBar);
 
 export default BottomActionBar;

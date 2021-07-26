@@ -11,6 +11,8 @@ const emptyChat = {
 
 export const chatReducer = (state: Chat = emptyChat, action: Action) => {
   switch (action.type) {
+    case ActionTypes.fetchChat:
+      return action.payload;
     case ActionTypes.addMessage:
       state.messages.push(action.payload);
       return state;

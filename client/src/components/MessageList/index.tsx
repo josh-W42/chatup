@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Message } from "../../actions";
+import { Chat, fetchChat, Message } from "../../actions";
 import { addTimeElement } from "../../util/time";
 import { useRouteMatch } from "react-router-dom";
 import {
@@ -12,17 +12,25 @@ import {
   Grid,
   Tooltip,
 } from "@material-ui/core";
+import { StoreState } from "../../reducers";
+import { connect } from "react-redux";
 
 interface URLParams {
   id?: string;
 }
 
-const MessageList = (): JSX.Element => {
-  const [messages, setMessages] = useState([]);
+interface MessageListProps {
+  fetchChat: typeof fetchChat;
+  chat: Chat;
+}
+
+const _MessageList = (props: MessageListProps): JSX.Element => {
   const params: URLParams = useRouteMatch<URLParams>().params;
 
   useEffect(() => {
-    console.log(params);
+    if (params.id && parseInt(params.id) !== props.chat.id) {
+      props.fetchChat(parseInt(params.id));
+    }
   }, [params.id]);
 
   const renderMessages = (): JSX.Element[] => {
@@ -30,7 +38,7 @@ const MessageList = (): JSX.Element => {
     let lastHour = { hour: lastDate.date.getHours() };
     let output: JSX.Element[] = [];
 
-    messages.forEach((message: Message) => {
+    props.chat.messages.forEach((message: Message) => {
       addTimeElement(lastDate, lastHour, message.createdAt, output);
       output.push(
         <ListItem
@@ -67,5 +75,13 @@ const MessageList = (): JSX.Element => {
 
   return <List>{renderMessages()}</List>;
 };
+
+const mapStateToProps = ({ chat }: StoreState): { chat: Chat } => {
+  return { chat };
+};
+
+const MessageList = connect(mapStateToProps, {
+  fetchChat,
+})(_MessageList);
 
 export default MessageList;

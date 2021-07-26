@@ -3,7 +3,7 @@ import { DrawerHeader, AppBar, Drawer } from "./styles";
 import ChatList from "../ChatList";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
-import { openNewChat, closeNewChat } from "../../actions";
+import { openNewChat, closeNewChat, Chat } from "../../actions";
 import { Route, Switch } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -20,16 +20,25 @@ import {
 } from "@material-ui/core";
 import MessageList from "../MessageList";
 import BottomActionBar from "../BottomActionBar";
+import { useEffect } from "react";
 
 interface DrawerProps {
   newChatOpen: boolean;
   openNewChat: typeof openNewChat;
   closeNewChat: typeof closeNewChat;
+  chat: Chat;
 }
 
 const _ChatDrawer = (props: DrawerProps): JSX.Element => {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
+  const [chatUpdated, setChatUpdated] = useState(false);
+
+  useEffect(() => {
+    if (chatUpdated) {
+      setChatUpdated(false);
+    }
+  }, [chatUpdated]);
 
   const handleDrawerTrigger = () => {
     setOpen((prev) => !prev);
@@ -56,7 +65,7 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="h2">
-            Chat Name Here
+            {props.chat.name}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -90,7 +99,7 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
         <Switch>
           <Route path="/chats/:id">
             <MessageList />
-            <BottomActionBar isDrawerOpen={open} />
+            <BottomActionBar chatUpdated={setChatUpdated} isDrawerOpen={open} />
           </Route>
         </Switch>
       </Box>
@@ -100,8 +109,9 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
 
 const mapStateToProps = ({
   newChatOpen,
-}: StoreState): { newChatOpen: boolean } => {
-  return { newChatOpen };
+  chat,
+}: StoreState): { newChatOpen: boolean; chat: Chat } => {
+  return { newChatOpen, chat };
 };
 
 const ChatDrawer = connect(mapStateToProps, { openNewChat, closeNewChat })(

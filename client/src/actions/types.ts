@@ -1,3 +1,4 @@
+import { FetchChatAction } from "./chat";
 import {
   OpenNewChatAction,
   CloseNewChatAction,
@@ -14,6 +15,7 @@ export enum ActionTypes {
   deleteChatPartial,
   addMessage,
   deleteMessage,
+  fetchChat,
 }
 
 export type Action =
@@ -22,4 +24,5 @@ export type Action =
   | AddChatPartialAction
   | DeleteChatPartialAction
   | AddMessageActon
-  | DeleteMessageAction;
+  | DeleteMessageAction
+  | FetchChatAction;
