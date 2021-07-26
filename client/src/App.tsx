@@ -9,12 +9,8 @@ function App(props: AppProps): JSX.Element {
   return (
     <>
       <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route path="/chats">
-          <ChatDashboard />
-        </Route>
+        <Route exact path="/" component={Home} />
+        <Route path="/chats" component={ChatDashboard} />
       </Switch>
     </>
   );
