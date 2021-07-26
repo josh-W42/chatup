@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Message } from "../../actions";
+import { addTimeElement } from "../../util/time";
 import {
   Avatar,
   List,
@@ -125,9 +126,14 @@ const MessageList = (): JSX.Element => {
     },
   ]);
 
-  const renderMessages = (): JSX.Element[] =>
-    fakeMessages.map((message: Message) => {
-      return (
+  const renderMessages = (): JSX.Element[] => {
+    let lastDate = { date: new Date(2000, 10) };
+    let lastHour = { hour: lastDate.date.getHours() };
+    let output: JSX.Element[] = [];
+
+    for (let message of fakeMessages) {
+      addTimeElement(lastDate, lastHour, message.createdAt, output);
+      output.push(
         <ListItem
           key={message.id}
           sx={{
@@ -143,8 +149,9 @@ const MessageList = (): JSX.Element => {
               <Avatar alt={message.author} src={message.authorImageUrl} />
             </Tooltip>
             <Tooltip
+              arrow
               placement={message.authorId === 1 ? "left" : "right"}
-              title={message.createdAt.toLocaleString()}
+              title={message.createdAt.toLocaleTimeString()}
             >
               <Card sx={{ maxWidth: 250, marginX: 1 }} elevation={4}>
                 <CardContent>
@@ -155,7 +162,9 @@ const MessageList = (): JSX.Element => {
           </Grid>
         </ListItem>
       );
-    });
+    }
+    return output;
+  };
 
   return <List>{renderMessages()}</List>;
 };
