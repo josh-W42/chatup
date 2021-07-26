@@ -1,15 +1,24 @@
-import { Paper, TextField, Button } from "@material-ui/core";
+import { Paper, TextField, Button, Grid, useTheme } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
 import React, { useState } from "react";
+import { calculateWidth } from "./styles";
 
 interface ActionBarState {
   content: string;
 }
 
-const BottomActionBar = () => {
+interface ActionBarProps {
+  isDrawerOpen: boolean;
+}
+
+const BottomActionBar = (props: ActionBarProps) => {
   const [values, setValues] = useState<ActionBarState>({
     content: "",
   });
+
+  const theme = useTheme();
+
+  console.log(theme);
 
   const handleChange =
     (prop: keyof ActionBarState) =>
@@ -22,28 +31,36 @@ const BottomActionBar = () => {
       sx={{
         position: "fixed",
         bottom: 0,
-        width: "100%",
+        transition: theme.transitions.create("width", {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+        width: calculateWidth(props.isDrawerOpen, theme),
       }}
       elevation={3}
     >
-      <TextField
-        sx={{ width: "55%" }}
-        autoFocus
-        variant="outlined"
-        value={values.content}
-        onChange={handleChange("content")}
-        multiline
-        label="Start Typing"
-      />
-      <Button
-        sx={{
-          height: "60px",
-        }}
-        variant="contained"
-        endIcon={<SendIcon />}
-      >
-        Send
-      </Button>
+      <Grid container justifyContent="flex-start">
+        <TextField
+          sx={{ flexGrow: 1 }}
+          autoFocus
+          variant="outlined"
+          value={values.content}
+          onChange={handleChange("content")}
+          multiline
+          label="Start Typing"
+        />
+        <Grid item>
+          <Button
+            sx={{
+              height: "56px",
+            }}
+            variant="contained"
+            endIcon={<SendIcon />}
+          >
+            Send
+          </Button>
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

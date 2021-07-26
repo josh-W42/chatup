@@ -4,7 +4,7 @@ import MuiAppBar, {
   AppBarProps as MuiAppBarProps,
 } from "@material-ui/core/AppBar";
 
-const drawerWidth = 250;
+export const drawerWidth = 250;
 
 export const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
