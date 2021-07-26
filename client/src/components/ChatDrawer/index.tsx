@@ -4,7 +4,13 @@ import ChatList from "../ChatList";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 import { openNewChat, closeNewChat } from "../../actions";
-import { Route, Switch } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  useParams,
+  useRouteMatch,
+  useLocation,
+} from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
