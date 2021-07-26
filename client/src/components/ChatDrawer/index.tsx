@@ -84,7 +84,7 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
         <ChatList />
         <Divider />
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <DrawerHeader />
         <Switch>
           <Route path="/chats/:id">

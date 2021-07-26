@@ -8,6 +8,7 @@ import {
   CardContent,
   Typography,
   Grid,
+  Tooltip,
 } from "@material-ui/core";
 
 const MessageList = (): JSX.Element => {
@@ -128,7 +129,9 @@ const MessageList = (): JSX.Element => {
     fakeMessages.map((message: Message) => {
       return (
         <ListItem
+          key={message.id}
           sx={{
+            p: 1,
             justifyContent: message.authorId === 1 ? "flex-end" : "flex-start",
           }}
         >
@@ -136,12 +139,19 @@ const MessageList = (): JSX.Element => {
             container
             direction={message.authorId === 1 ? "row-reverse" : "row"}
           >
-            <Avatar alt={message.author} src={message.authorImageUrl} />
-            <Card sx={{ maxWidth: 275, marginX: 1 }} elevation={4}>
-              <CardContent>
-                <Typography variant="body2">{message.content}</Typography>
-              </CardContent>
-            </Card>
+            <Tooltip title={message.author} arrow>
+              <Avatar alt={message.author} src={message.authorImageUrl} />
+            </Tooltip>
+            <Tooltip
+              placement={message.authorId === 1 ? "left" : "right"}
+              title={message.createdAt.toLocaleString()}
+            >
+              <Card sx={{ maxWidth: 250, marginX: 1 }} elevation={4}>
+                <CardContent>
+                  <Typography variant="body2">{message.content}</Typography>
+                </CardContent>
+              </Card>
+            </Tooltip>
           </Grid>
         </ListItem>
       );
