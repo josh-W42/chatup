@@ -14,7 +14,10 @@ export const newChatDialogReducer = (
   }
 };
 
-export const newChatReducer = (state: ChatPartial[] = [], action: Action) => {
+export const chatPartialReducer = (
+  state: ChatPartial[] = [],
+  action: Action
+) => {
   switch (action.type) {
     case ActionTypes.addChatPartial:
       return state.concat([action.payload]);

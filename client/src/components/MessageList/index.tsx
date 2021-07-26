@@ -13,9 +13,17 @@ import {
   Tooltip,
 } from "@material-ui/core";
 
+interface URLParams {
+  id?: string;
+}
+
 const MessageList = (): JSX.Element => {
   const [messages, setMessages] = useState([]);
-  const params = useRouteMatch().params;
+  const params: URLParams = useRouteMatch<URLParams>().params;
+
+  useEffect(() => {
+    console.log(params);
+  }, [params.id]);
 
   const renderMessages = (): JSX.Element[] => {
     let lastDate = { date: new Date(2000, 10) };

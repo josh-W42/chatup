@@ -5,5 +5,6 @@ export interface Message {
   authorId: number;
   authorImageUrl: string;
   sentGraphic: boolean;
+  graphicUrls: string[];
   createdAt: Date;
 }
