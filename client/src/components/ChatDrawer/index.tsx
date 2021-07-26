@@ -25,6 +25,7 @@ import {
   useTheme,
 } from "@material-ui/core";
 import MessageList from "../MessageList";
+import BottomActionBar from "../BottomActionBar";
 
 interface DrawerProps {
   newChatOpen: boolean;
@@ -95,6 +96,7 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
         <Switch>
           <Route path="/chats/:id">
             <MessageList />
+            <BottomActionBar />
           </Route>
         </Switch>
       </Box>

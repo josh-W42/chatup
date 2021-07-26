@@ -4,7 +4,7 @@ import MuiAppBar, {
   AppBarProps as MuiAppBarProps,
 } from "@material-ui/core/AppBar";
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 export const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -20,9 +20,9 @@ export const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(10)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
+    width: `calc(${theme.spacing(10)} + 1px)`,
   },
 });
 
