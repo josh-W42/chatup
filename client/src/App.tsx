@@ -12,7 +12,7 @@ function App(props: AppProps): JSX.Element {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route exact path="/chats">
+        <Route path="/chats">
           <ChatDashboard />
         </Route>
       </Switch>
