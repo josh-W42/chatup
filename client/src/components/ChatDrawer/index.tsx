@@ -102,6 +102,7 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
             <BottomActionBar chatUpdated={setChatUpdated} isDrawerOpen={open} />
           </Route>
         </Switch>
+        <DrawerHeader />
       </Box>
     </Box>
   );

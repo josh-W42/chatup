@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
+import { useRef } from "react";
 
 interface URLParams {
   id?: string;
@@ -32,6 +33,16 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
       props.fetchChat(parseInt(params.id));
     }
   }, [params.id]);
+
+  useEffect(() => {
+    /*
+      TODO, update for real-time
+    */
+    const el = document.querySelector("#scrollTarget");
+    if (el) {
+      el.scrollIntoView();
+    }
+  }, [props.chat.messages.length]);
 
   const renderMessages = (): JSX.Element[] => {
     let lastDate = { date: new Date(2000, 10) };
@@ -60,7 +71,10 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
               placement={message.authorId === 1 ? "left" : "right"}
               title={message.createdAt.toLocaleTimeString()}
             >
-              <Card sx={{ maxWidth: 250, marginX: 1 }} elevation={4}>
+              <Card
+                sx={{ maxWidth: 250, marginX: 1, wordWrap: "break-word" }}
+                elevation={4}
+              >
                 <CardContent>
                   <Typography variant="body2">{message.content}</Typography>
                 </CardContent>
@@ -73,7 +87,12 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
     return output;
   };
 
-  return <List>{renderMessages()}</List>;
+  return (
+    <List>
+      {renderMessages()}
+      <div id="scrollTarget"></div>
+    </List>
+  );
 };
 
 const mapStateToProps = ({ chat }: StoreState): { chat: Chat } => {

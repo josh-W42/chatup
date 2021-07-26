@@ -6,8 +6,14 @@ import {
   useTheme,
   Input,
 } from "@material-ui/core";
+import { ContentPasteOffSharp } from "@material-ui/icons";
 import SendIcon from "@material-ui/icons/Send";
-import React, { SetStateAction, useState } from "react";
+import React, {
+  SetStateAction,
+  useState,
+  useEffect,
+  KeyboardEventHandler,
+} from "react";
 import { connect } from "react-redux";
 import { Chat, Message, addMessage } from "../../actions";
 import { StoreState } from "../../reducers";
@@ -32,25 +38,44 @@ const _BottomActionBar = (props: ActionBarProps) => {
     sentGraphic: false,
     graphicUrls: [],
   });
+
+  const handleChange =
+    (prop: keyof ActionBarState) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
   const theme = useTheme();
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.code === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const sendMessage = () => {
+    if (values.sentGraphic || values.content !== "") {
+      const newMessage: Message = {
+        id: Math.floor(Math.random() * 100),
+        content: values.content,
+        author: "Jersh Wilison",
+        authorId: Math.floor(Math.random() * 3),
+        authorImageUrl: "https://picsum.photos/200",
+        sentGraphic: values.sentGraphic,
+        graphicUrls: values.graphicUrls,
+        createdAt: new Date(),
+      };
+
+      props.addMessage(newMessage, props.chat.id);
+      props.chatUpdated(true);
+      reset();
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const newMessage: Message = {
-      id: Math.floor(Math.random() * 100),
-      content: values.content,
-      author: "Jersh Wilison",
-      authorId: Math.floor(Math.random() * 3),
-      authorImageUrl: "https://picsum.photos/200",
-      sentGraphic: values.sentGraphic,
-      graphicUrls: values.graphicUrls,
-      createdAt: new Date(),
-    };
-
-    props.addMessage(newMessage, props.chat.id);
-    props.chatUpdated(true);
-    reset();
+    sendMessage();
   };
 
   const reset = () => {
@@ -60,12 +85,6 @@ const _BottomActionBar = (props: ActionBarProps) => {
       graphicUrls: [],
     });
   };
-
-  const handleChange =
-    (prop: keyof ActionBarState) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
 
   return (
     <Paper
@@ -90,6 +109,7 @@ const _BottomActionBar = (props: ActionBarProps) => {
             onChange={handleChange("content")}
             multiline
             label="Start Typing"
+            onKeyDown={handleKeyDown}
           />
           <Grid item>
             <Button
