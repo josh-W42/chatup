@@ -25,7 +25,6 @@ import {
 
 interface DialogProps {
   newChatOpen: boolean;
-  setChatListChanged: React.Dispatch<SetStateAction<boolean>>;
   openNewChat: typeof openNewChat;
   closeNewChat: typeof closeNewChat;
   addChatPartial: typeof addChatPartial;
@@ -71,7 +70,6 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
     };
 
     props.addChatPartial(newChat);
-    props.setChatListChanged(true);
     props.closeNewChat();
     reset();
   };

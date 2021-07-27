@@ -1,4 +1,4 @@
-import { Action, ActionTypes } from "../actions";
+import { Action, ActionTypes, ChatPartial, User } from "../actions";
 
 export const newChatDialogReducer = (
   state: boolean = false,
@@ -9,6 +9,18 @@ export const newChatDialogReducer = (
       return action.payload;
     case ActionTypes.closeNewChat:
       return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const chatPartialReducer = (
+  state: ChatPartial[] = [],
+  action: Action
+) => {
+  switch (action.type) {
+    case ActionTypes.addChatPartial:
+      return state.concat([action.payload]);
     default:
       return state;
   }
