@@ -1,13 +1,5 @@
 import { Chat, Action, ActionTypes } from "../actions";
-
-const emptyChat = {
-  id: 1,
-  name: "basic",
-  imageUrl: "broken",
-  lastUpdated: new Date(),
-  messages: [],
-  members: [],
-};
+import { emptyChat } from "../util/EmptyModels";
 
 export const chatReducer = (state: Chat = emptyChat, action: Action) => {
   switch (action.type) {
