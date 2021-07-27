@@ -18,7 +18,12 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
           style={{ color: "inherit", textDecoration: "none" }}
           to={`/chats/${chat.id}`}
         >
-          <ListItem button key={chat.id} sx={{ overflow: "revert" }}>
+          <ListItem
+            button
+            key={chat.id}
+            tabIndex={-1}
+            sx={{ overflow: "revert" }}
+          >
             <StyledBadge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -33,9 +38,6 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
               <Typography variant="caption" component="span">
                 {timeSinceDate(chat.lastUpdated)}
               </Typography>
-            </Grid>
-            <Grid container direction="row" justifyContent="space-between">
-              <div></div>
             </Grid>
           </ListItem>
         </Link>

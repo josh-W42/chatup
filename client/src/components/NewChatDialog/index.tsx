@@ -146,6 +146,7 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
                 Cancel
               </Button>
               <Button
+                tabIndex={-1}
                 color="primary"
                 autoFocus
                 size="large"

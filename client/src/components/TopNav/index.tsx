@@ -15,12 +15,14 @@ const TopNav = (): JSX.Element => {
             </Typography>
           </Link>
           <Link
+            tabIndex={-1}
             to="/auth/login"
             style={{ color: "inherit", textDecoration: "none" }}
           >
             <Button color="inherit">Login</Button>
           </Link>
           <Link
+            tabIndex={-1}
             to="/auth/signup"
             style={{ color: "inherit", textDecoration: "none" }}
           >

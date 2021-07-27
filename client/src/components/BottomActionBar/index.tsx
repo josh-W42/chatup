@@ -107,6 +107,7 @@ const _BottomActionBar = (props: ActionBarProps) => {
           />
           <Grid item>
             <Button
+              tabIndex={-1}
               sx={{
                 height: "56px",
               }}
