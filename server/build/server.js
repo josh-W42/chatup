@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
 var morgan_1 = __importDefault(require("morgan"));
+var v1_1 = require("./v1");
 var app = express_1.default();
 var PORT = process.env.PORT || 8000;
 // Declare initial Middleware
@@ -14,10 +15,11 @@ app.use(express_1.default.json()); // json parser
 app.use(morgan_1.default("dev")); // development logger
 app.use(cors_1.default());
 app.get("/api", function (req, res) {
-    res.json({
+    res.status(200).json({
         message: "Welcome to the ChatUp API!",
     });
 });
+app.use("/api/v1", v1_1.router);
 app.get("*", function (req, res) {
     res.status(404).json({
         message: "Not Found",
