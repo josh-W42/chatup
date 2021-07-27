@@ -1,4 +1,4 @@
-import { Action, ActionTypes, ChatPartial } from "../actions";
+import { Action, ActionTypes } from "../actions";
 
 export const newChatDialogReducer = (
   state: boolean = false,
