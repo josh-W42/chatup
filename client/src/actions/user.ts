@@ -30,6 +30,30 @@ export interface DeleteUserAction {
   payload: number;
 }
 
+export interface AddChatPartialAction {
+  type: ActionTypes.addChatPartial;
+  payload: ChatPartial;
+}
+
+export interface DeleteChatPartialAction {
+  type: ActionTypes.deleteChatPartial;
+  payload: number;
+}
+
+export const addChatPartial = (newChat: ChatPartial): AddChatPartialAction => {
+  return {
+    type: ActionTypes.addChatPartial,
+    payload: newChat,
+  };
+};
+
+export const deleteChatPartial = (id: number): DeleteChatPartialAction => {
+  return {
+    type: ActionTypes.deleteChatPartial,
+    payload: id,
+  };
+};
+
 export const createUser = (newUser: User): CreateUserAction => {
   return {
     type: ActionTypes.createUser,

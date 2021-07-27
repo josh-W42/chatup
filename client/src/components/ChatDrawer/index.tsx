@@ -3,7 +3,7 @@ import { DrawerHeader, AppBar, Drawer } from "./styles";
 import ChatList from "../ChatList";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
-import { openNewChat, closeNewChat, Chat } from "../../actions";
+import { openNewChat, closeNewChat, Chat, User } from "../../actions";
 import { Route, Switch } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -27,6 +27,7 @@ interface DrawerProps {
   openNewChat: typeof openNewChat;
   closeNewChat: typeof closeNewChat;
   chat: Chat;
+  user: User;
 }
 
 const _ChatDrawer = (props: DrawerProps): JSX.Element => {
@@ -71,8 +72,8 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          <Typography>UserName</Typography>
+          <Avatar alt={props.user.username} src={props.user.imageUrl} />
+          <Typography>{props.user.username}</Typography>
           <IconButton onClick={handleDrawerTrigger}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
@@ -111,8 +112,9 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
 const mapStateToProps = ({
   newChatOpen,
   chat,
-}: StoreState): { newChatOpen: boolean; chat: Chat } => {
-  return { newChatOpen, chat };
+  user,
+}: StoreState): { newChatOpen: boolean; chat: Chat; user: User } => {
+  return { newChatOpen, chat, user };
 };
 
 const ChatDrawer = connect(mapStateToProps, { openNewChat, closeNewChat })(

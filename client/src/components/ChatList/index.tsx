@@ -1,5 +1,5 @@
 import { StyledBadge } from "./styles";
-import { ChatPartial } from "../../actions";
+import { ChatPartial, User } from "../../actions";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 import { timeSinceDate } from "../../util/time";
@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 import { ListItem, List, Avatar, Typography, Grid } from "@material-ui/core";
 
 interface ChatListProps {
-  chatPartials: ChatPartial[];
+  user: User;
 }
 
 const _ChatList = (props: ChatListProps): JSX.Element => {
   const renderChats = (): JSX.Element[] =>
-    props.chatPartials.map((chat: ChatPartial) => {
+    props.user.chats.map((chat: ChatPartial) => {
       return (
         <Link
           style={{ color: "inherit", textDecoration: "none" }}
@@ -47,10 +47,8 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
   return <List>{renderChats()}</List>;
 };
 
-const mapStateToProps = ({
-  chatPartials,
-}: StoreState): { chatPartials: ChatPartial[] } => {
-  return { chatPartials };
+const mapStateToProps = ({ user }: StoreState): { user: User } => {
+  return { user };
 };
 
 const ChatList = connect(mapStateToProps)(_ChatList);
