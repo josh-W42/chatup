@@ -7,3 +7,4 @@ var router = express_1.Router();
 exports.router = router;
 router.get("/test", controllers_1.auth.test);
 router.post("/login", controllers_1.auth.login);
+router.post("/signup", controllers_1.auth.signUp);

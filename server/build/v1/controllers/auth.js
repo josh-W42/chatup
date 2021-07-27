@@ -11,7 +11,15 @@ var login = function (req, res) {
         message: "Not Implemented",
     });
 };
+var signUp = function (req, res) {
+    var _a = req.body, userName = _a.userName, password = _a.password;
+    try {
+        // check if username exists
+    }
+    catch (_b) { }
+};
 exports.handlers = {
     login: login,
     test: test,
+    signUp: signUp,
 };
