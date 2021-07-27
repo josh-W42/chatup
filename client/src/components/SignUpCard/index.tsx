@@ -14,9 +14,9 @@ import {
   IconButton,
   Avatar,
   Typography,
-  InputBase,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { createUser, User } from "../../actions/user";
 
 interface SignUpState {
   userName: string;
@@ -24,6 +24,7 @@ interface SignUpState {
   confirmPassword: string;
   showPassword: boolean;
   imageUrl: string;
+  redirect: boolean;
 }
 
 const SignUpCard = (): JSX.Element => {
@@ -33,6 +34,7 @@ const SignUpCard = (): JSX.Element => {
     confirmPassword: "",
     showPassword: false,
     imageUrl: "",
+    redirect: false,
   });
 
   const handleChange =
@@ -55,30 +57,32 @@ const SignUpCard = (): JSX.Element => {
     }
   };
 
-  const reset = () => {
+  const redirect = () => {
     setValues({
-      userName: "",
-      password: "",
-      confirmPassword: "",
-      showPassword: false,
-      imageUrl: "",
+      ...values,
+      redirect: true,
     });
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // const newChat: ChatPartial = {
-    //   id: Math.floor(Math.random() * 100),
-    //   name: values.name,
-    //   imageUrl: values.imageUrl,
-    //   lastUpdated: new Date(),
-    // };
+    const newUser: User = {
+      id: Math.floor(Math.random() * 100),
+      username: values.userName,
+      password: values.password,
+      imageUrl: values.imageUrl,
+      chats: [],
+      createdAt: new Date(),
+    };
 
-    // props.addChatPartial(newChat);
-    // props.closeNewChat();
-    // reset();
+    createUser(newUser);
+    redirect();
   };
+
+  if (values.redirect) {
+    return <Redirect to="/chats" />;
+  }
 
   return (
     <Box>

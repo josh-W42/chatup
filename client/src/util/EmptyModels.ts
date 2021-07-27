@@ -10,8 +10,8 @@ export const AnonymousUser: User = {
 };
 
 export const emptyChat: Chat = {
-  id: 1,
-  name: "basic",
+  id: -1,
+  name: "",
   imageUrl: "broken",
   lastUpdated: new Date(),
   messages: [],
