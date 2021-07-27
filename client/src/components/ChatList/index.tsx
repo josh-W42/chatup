@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 import { ListItem, List, Avatar, Typography, Grid } from "@material-ui/core";
 
 interface ChatListProps {
-  chatList: ChatPartial[];
+  user: User;
 }
 
 const _ChatList = (props: ChatListProps): JSX.Element => {
   const renderChats = (): JSX.Element[] =>
-    props.chatList.map((chat: ChatPartial) => {
+    props.user.chats.map((chat: ChatPartial) => {
       return (
         <Link
           style={{ color: "inherit", textDecoration: "none" }}
@@ -47,10 +47,8 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
   return <List>{renderChats()}</List>;
 };
 
-const mapStateToProps = ({
-  chatList,
-}: StoreState): { chatList: ChatPartial[] } => {
-  return { chatList };
+const mapStateToProps = ({ user }: StoreState): { user: User } => {
+  return { user };
 };
 
 const ChatList = connect(mapStateToProps)(_ChatList);

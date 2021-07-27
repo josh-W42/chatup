@@ -6,13 +6,14 @@ export const chatReducer = (state: Chat = emptyChat, action: Action) => {
     case ActionTypes.fetchChat:
       return action.payload;
     case ActionTypes.addMessage:
-      state.messages.push(action.payload);
-      return state;
+      return { ...state, messages: [...state.messages, action.payload] };
     case ActionTypes.deleteMessage:
-      state.messages = state.messages.filter((message) => {
-        return message.id !== action.payload;
-      });
-      return state;
+      return {
+        ...state,
+        messages: state.messages.filter(
+          (message) => message.id !== action.payload
+        ),
+      };
     default:
       return state;
   }

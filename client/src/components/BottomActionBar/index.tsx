@@ -62,7 +62,6 @@ const _BottomActionBar = (props: ActionBarProps) => {
       };
 
       props.addMessage(newMessage, props.chat.id);
-      props.chatUpdated(true);
       reset();
     }
   };

@@ -1,4 +1,4 @@
-import React, { useState, SetStateAction } from "react";
+import React, { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";

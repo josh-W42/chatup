@@ -12,11 +12,12 @@ export const userReducer = (state: User = AnonymousUser, action: Action) => {
       // TODO
       return state;
     case ActionTypes.addChatPartial:
-      state.chats.push(action.payload);
-      return state;
+      return { ...state, chats: [action.payload, ...state.chats] };
     case ActionTypes.deleteChatPartial:
-      state.chats = state.chats.filter((chat) => chat.id !== action.payload);
-      return state;
+      return {
+        ...state,
+        chats: state.chats.filter((chat) => chat.id !== action.payload),
+      };
     default:
       return state;
   }
