@@ -13,6 +13,7 @@ import {
   InputAdornment,
   IconButton,
 } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 interface LoginState {
   userName: string;
@@ -40,54 +41,101 @@ const LoginCard = (): JSX.Element => {
     });
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // props.addChatPartial(newChat);
+    // props.closeNewChat();
+    reset();
+  };
+
+  const reset = () => {
+    setValues({
+      userName: "",
+      showPassword: false,
+      password: "",
+    });
+  };
+
   return (
     <Box>
-      <Grid container justifyContent="center">
-        <Grid item xs={6} md={4}>
-          <Card elevation={4} sx={{ maxWidth: 600, minWidth: 100 }}>
-            <CardContent>
-              <h2>Login</h2>
-              <FormControl sx={{ m: 2, width: "80%" }} variant="standard">
-                <InputLabel htmlFor="userName">Username</InputLabel>
-                <Input
-                  id="userName"
-                  type="text"
-                  value={values.userName}
-                  onChange={handleChange("userName")}
-                />
-              </FormControl>
-              <FormControl sx={{ m: 2, width: "80%" }} variant="standard">
-                <InputLabel htmlFor="password">Password</InputLabel>
-                <Input
-                  id="password"
-                  type={values.showPassword ? "text" : "password"}
-                  value={values.password}
-                  onChange={handleChange("password")}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleShowPassword}>
-                        {values.showPassword ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
-            </CardContent>
-            <CardActions>
-              <Grid container justifyContent="space-around">
-                <Button color="primary" size="large" variant="contained">
-                  Login
-                </Button>
-                <Button variant="text">Need An Account?</Button>
-              </Grid>
-            </CardActions>
-          </Card>
+      <form onSubmit={handleSubmit}>
+        <Grid container justifyContent="center">
+          <Grid item xs={12} sm={6} md={5}>
+            <Card elevation={4} sx={{ maxWidth: 600, minWidth: 100 }}>
+              <CardContent>
+                <h2>Login</h2>
+                <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
+                  <InputLabel htmlFor="userName">Username</InputLabel>
+                  <Input
+                    required
+                    aria-required
+                    id="userName"
+                    type="text"
+                    value={values.userName}
+                    onChange={handleChange("userName")}
+                  />
+                </FormControl>
+                <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <Input
+                    id="password"
+                    required
+                    aria-required
+                    type={values.showPassword ? "text" : "password"}
+                    value={values.password}
+                    onChange={handleChange("password")}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleShowPassword}>
+                          {values.showPassword ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+              </CardContent>
+              <CardActions>
+                <Grid container justifyContent="space-around">
+                  <Button
+                    tabIndex={-1}
+                    fullWidth
+                    sx={{ marginX: 2 }}
+                    color="primary"
+                    size="large"
+                    variant="contained"
+                  >
+                    <Input
+                      sx={{
+                        color: "inherit",
+                        cursor: "pointer",
+                      }}
+                      fullWidth
+                      color="primary"
+                      size="medium"
+                      disableUnderline={true}
+                      type="submit"
+                      value="LOGIN"
+                    />
+                  </Button>
+                  <Link
+                    to="/auth/signup"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    <Button tabIndex={-1} sx={{ marginY: 5 }} variant="text">
+                      Need An Account?
+                    </Button>
+                  </Link>
+                </Grid>
+              </CardActions>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      </form>
     </Box>
   );
 };
