@@ -16,13 +16,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
-import { createUser, User } from "../../actions/";
+import { createUser, User, Credentials } from "../../actions/";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 
 interface SignUpState {
   userName: string;
-  password: string;
+  passWord: string;
   confirmPassword: string;
   showPassword: boolean;
   imageUrl: string;
@@ -36,7 +36,7 @@ interface SignUpCardProps {
 const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   const [values, setValues] = useState<SignUpState>({
     userName: "",
-    password: "",
+    passWord: "",
     confirmPassword: "",
     showPassword: false,
     imageUrl: "",
@@ -63,17 +63,22 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     }
   };
 
-  const getImageUpload = (): Blob | void => {
+  const getImageUpload = (): Blob => {
     const inputEl: HTMLInputElement | null =
       document.querySelector("#profileImage");
     if (inputEl && inputEl.files) {
       return inputEl.files[0] as Blob;
     }
+    return new Blob();
   };
 
   const redirect = () => {
     setValues({
-      ...values,
+      userName: "",
+      passWord: "",
+      confirmPassword: "",
+      showPassword: false,
+      imageUrl: "",
       redirect: true,
     });
   };
@@ -81,16 +86,22 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newUser = new FormData();
-    newUser.append("userName", values.userName);
-    newUser.append("password", values.password);
+    const newUser: Credentials = {
+      userName: values.userName,
+      passWord: values.passWord,
+    };
 
     if (values.imageUrl !== "") {
-      newUser.append("imageUrl", getImageUpload() || new Blob());
+      props.createUser(
+        newUser,
+        new FormData().append("imageUrl", getImageUpload())
+      );
+    } else {
+      props.createUser(newUser);
     }
 
     props.createUser(newUser);
-    // redirect();
+    redirect();
   };
 
   if (values.redirect) {
@@ -117,14 +128,14 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                   />
                 </FormControl>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <InputLabel htmlFor="passWord">Password</InputLabel>
                   <Input
-                    id="password"
+                    id="passWord"
                     required
                     aria-required
-                    type={values.showPassword ? "text" : "password"}
-                    value={values.password}
-                    onChange={handleChange("password")}
+                    type={values.showPassword ? "text" : "passWord"}
+                    value={values.passWord}
+                    onChange={handleChange("passWord")}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton onClick={handleShowPassword}>
@@ -144,7 +155,7 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                   </InputLabel>
                   <Input
                     id="confirmPassword"
-                    type={values.showPassword ? "text" : "password"}
+                    type={values.showPassword ? "text" : "passWord"}
                     value={values.confirmPassword}
                     required
                     aria-required
@@ -208,7 +219,6 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                         cursor: "pointer",
                       }}
                       fullWidth
-                      color="primary"
                       size="medium"
                       disableUnderline={true}
                       type="submit"

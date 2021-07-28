@@ -3,7 +3,7 @@ import { Chat, User } from "../actions";
 export const AnonymousUser: User = {
   id: -1,
   userName: "Anonymous",
-  password: "",
+  passWord: "",
   chats: [],
   imageUrl: "broken",
   createdAt: new Date(),

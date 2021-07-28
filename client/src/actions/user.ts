@@ -8,7 +8,7 @@ const { REACT_APP_SERVER_URL } = process.env;
 export interface User {
   id: number;
   userName: string;
-  password: string;
+  passWord: string;
   chats: ChatPartial[];
   imageUrl: string;
   createdAt: Date;
@@ -16,7 +16,7 @@ export interface User {
 
 export interface Credentials {
   userName: string;
-  password: string;
+  passWord: string;
 }
 
 export interface CreateUserAction {
@@ -58,23 +58,30 @@ export const deleteChatPartial = (id: number): DeleteChatPartialAction => {
   };
 };
 
-export const createUser = (newUser: FormData) => {
+export const createUser = (newUser: Credentials, formData?: FormData) => {
   return async (dispatch: Dispatch<CreateUserAction>) => {
     try {
       if (REACT_APP_SERVER_URL) {
-        const response = await axios.post<User, AxiosResponse<User>>(
-          `${REACT_APP_SERVER_URL}/auth/signup`,
-          newUser,
-          {
+        const response = await axios.post<
+          Credentials,
+          AxiosResponse<{ created: User }>
+        >(`${REACT_APP_SERVER_URL}/auth/signup`, newUser);
+
+        /*
+          TODO - Access another route for updating a profile picture
+          axios.put<
+            User,
+            AxiosResponse<{ imageUrl: string }>
+          >(`${REACT_APP_SERVER_URL}/users/changeProfile`, newUser, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          }
-        );
+          });
+        */
 
         dispatch<CreateUserAction>({
           type: ActionTypes.createUser,
-          payload: response.data,
+          payload: response.data.created,
         });
       } else {
         throw new Error("No SERVER URL FOUND");
