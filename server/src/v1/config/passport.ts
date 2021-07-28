@@ -5,7 +5,7 @@ import {
   VerifiedCallback,
 } from "passport-jwt";
 import { PassportStatic } from "passport";
-import { db, User } from "../models";
+import { db, User, Payload } from "../models";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -18,11 +18,6 @@ const options: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: JWT_SECRET,
 };
-
-interface Payload {
-  id: number;
-  userName: string;
-}
 
 export default (passport: PassportStatic): void => {
   passport.use(

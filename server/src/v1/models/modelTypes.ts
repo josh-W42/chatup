@@ -1,12 +1,14 @@
+export type uuid = string;
+
 export interface DataBase {
-  chats: Map<number, Chat>;
+  chats: Map<uuid, Chat>;
   users: Map<string, User>;
-  messages: Map<number, Map<number, Message>>;
-  members: Map<number, Map<string, boolean>>;
+  messages: Map<uuid, Map<uuid, Message>>;
+  members: Map<uuid, Map<string, string>>;
 }
 
 export interface Chat {
-  id: number;
+  id: uuid;
   name: string;
   imageUrl: string;
   lastUpdated: number;
@@ -14,15 +16,15 @@ export interface Chat {
 }
 
 export interface User {
-  id: number;
+  id: uuid;
   userName: string;
-  password: string;
+  passWord: string;
   imageUrl: string;
   createdAt: number;
 }
 
 export interface Message {
-  id: number;
+  id: uuid;
   author: string;
   content: string;
   authorImageUrl: string;
@@ -53,7 +55,7 @@ export interface Message {
     },
     "members": {
       "23483932": {
-        "username": { true },
+        "username": { "nickname" || "username" },
         ...
       },
       ...

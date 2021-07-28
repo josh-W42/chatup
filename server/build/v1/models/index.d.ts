@@ -1,3 +1,4 @@
-import { DataBase } from "./types";
+import { DataBase } from "./modelTypes";
 export declare const db: DataBase;
-export * from "./types";
+export * from "./modelTypes";
+export * from "./expressTypes";

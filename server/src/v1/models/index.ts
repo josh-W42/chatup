@@ -1,5 +1,8 @@
 // For production
-// import * as admin from "firebase-admin";
+// import admin from "firebase-admin";
+// import dotenv from "dotenv";
+
+// dotenv.config();
 
 // const { DATABASE_URL } = process.env;
 
@@ -14,14 +17,15 @@
 
 // export const db = admin.database()
 
-import { DataBase, Chat, User, Message } from "./types";
+import { DataBase, Chat, User, Message, uuid } from "./modelTypes";
 
 let data: DataBase = {
-  chats: new Map<number, Chat>(),
+  chats: new Map<uuid, Chat>(),
   users: new Map<string, User>(),
-  messages: new Map<number, Map<number, Message>>(),
-  members: new Map<number, Map<string, boolean>>(),
+  messages: new Map<uuid, Map<uuid, Message>>(),
+  members: new Map<uuid, Map<string, string>>(),
 };
 
 export const db: DataBase = data;
-export * from "./types";
+export * from "./modelTypes";
+export * from "./expressTypes";

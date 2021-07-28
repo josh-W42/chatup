@@ -15,7 +15,7 @@ export interface Chat {
 export interface User {
     id: uuid;
     userName: string;
-    password: string;
+    passWord: string;
     imageUrl: string;
     createdAt: number;
 }
