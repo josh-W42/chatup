@@ -1,4 +1,4 @@
-import { DataBase } from "./modelTypes";
-export declare const db: DataBase;
+import admin from "firebase-admin";
+export declare const db: admin.database.Database;
 export * from "./modelTypes";
 export * from "./expressTypes";

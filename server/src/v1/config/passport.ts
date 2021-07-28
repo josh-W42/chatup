@@ -25,10 +25,12 @@ export default (passport: PassportStatic): void => {
       options,
       async (jwt_payload: Payload, done: VerifiedCallback) => {
         try {
-          const user: User | undefined = db.users.get(jwt_payload.userName);
+          const foundUserRef = db.ref(`/users/${jwt_payload.userName}}`);
 
-          if (user) {
-            return done(null, user);
+          const dbSnapshot = await foundUserRef.once("value");
+
+          if (dbSnapshot.exists()) {
+            return done(null, dbSnapshot.val() as User);
           } else {
             throw new Error("No User Found");
           }

@@ -1,33 +1,104 @@
 import { Request, Response } from "express";
-import { db, RequestWithBody, User, uuid } from "../models";
-import bcrypt from "bcrypt";
+import { db, Payload, RequestWithBody, User, uuid } from "../models";
 import { v4 as uuidv4 } from "uuid";
 import { handleError } from "../util/helper";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const { JWT_SECRET } = process.env;
 
 const test = (req: Request, res: Response): void => {
+  // const dbRef = db.ref("/"); // a reference to the global db
+  // try {
+  //   dbRef.once("value", (data) => {
+  //     return res.json({
+  //       message: "Success",
+  //       data,
+  //     });
+  //   });
+  // } catch {
+  //   res.json({
+  //     message: "sFailure",
+  //   });
+  // }
   res.json({
-    message: "Success",
+    message: "success",
   });
 };
 
-const login = (req: Request, res: Response): void => {
-  res.json({
-    message: "It worked!",
-  });
-};
-
-const signUp = (req: RequestWithBody, res: Response): void => {
+const login = async (req: RequestWithBody, res: Response) => {
   const { userName, passWord } = req.body;
 
-  console.log(userName, passWord);
+  // type guards
+  if (!userName || !passWord) {
+    return handleError(new Error("Invalid UserName or Password"), 400, res);
+  }
+
+  if (!JWT_SECRET) {
+    return handleError(new Error("No Environment Variables"), 500, res);
+  }
+
+  const foundUserRef = db.ref(`/users/${userName}`);
+
+  try {
+    // find the user
+    const dbSnapshot = await foundUserRef.once("value");
+
+    if (!dbSnapshot.exists()) {
+      return handleError(new Error("No User Found"), 400, res);
+    }
+
+    const user: User = dbSnapshot.val();
+
+    // compare passwords
+    const isValid = await bcrypt.compare(passWord, user.passWord);
+
+    if (!isValid) {
+      return handleError(new Error("Invalid Password"), 400, res);
+    }
+
+    // sign Json web tokens
+
+    const payload: Payload = {
+      id: user.id,
+      userName: user.userName,
+    };
+
+    jwt.sign(payload, JWT_SECRET, { expiresIn: 7200 }, (error, token) => {
+      if (error) return handleError(error, 500, res);
+      if (!token) return handleError(new Error("No Token Found"), 500, res);
+
+      const verified = jwt.verify(token, JWT_SECRET);
+
+      res.json({
+        token: `Bearer ${token}`,
+        user: { ...user, passWord: "", chats: [] },
+      });
+    });
+  } catch (error) {
+    return handleError(error, 500, res);
+  }
+};
+
+const signUp = async (req: RequestWithBody, res: Response) => {
+  const { userName, passWord } = req.body;
+
   // type guard the input
   if (!userName || !passWord) {
     return handleError(new Error("Invalid UserName or Password"), 400, res);
   }
 
+  const userRef = db.ref("/users");
+
   try {
     // check if username exists
-    if (db.users.has(userName)) {
+    let foundUserRef = userRef.child(`/${userName}`);
+
+    const foundUser = await foundUserRef.once("value");
+    if (foundUser.exists()) {
       return handleError(new Error("Username Already Exists"), 400, res);
     }
 
@@ -48,17 +119,21 @@ const signUp = (req: RequestWithBody, res: Response): void => {
         if (error) return handleError(error, 500, res);
 
         newUser.passWord = hash;
-        // For now update fake db
-        db.users.set(newUser.id, newUser);
-        // TODO - Save to Firebase
-        // newUser.passWord = "";
-        // send to login route? or return? We'll see.
-        // for now we'll just create a new object and send it back
-        // but in the future we'll just return the obj.
-        console.log(db);
-        return res.status(201).json({
-          created: { ...newUser, passWord: "", chats: [] },
-        });
+
+        // Save to Firebase
+        await userRef.update(
+          {
+            [`${newUser.userName}`]: newUser,
+          },
+          (err) => {
+            if (err) return handleError(err, 500, res);
+
+            newUser.passWord = "";
+            return res.status(201).json({
+              created: { ...newUser, chats: [] },
+            });
+          }
+        );
       });
     });
   } catch (error) {

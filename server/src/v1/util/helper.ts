@@ -5,7 +5,7 @@ export const handleError = (
   statusCode: number,
   res: Response
 ): void => {
-  console.error(err);
+  console.error(err.message);
   res.status(statusCode).json({
     message: err.message,
   });

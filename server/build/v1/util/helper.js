@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleError = void 0;
 var handleError = function (err, statusCode, res) {
-    console.error(err);
+    console.error(err.message);
     res.status(statusCode).json({
         message: err.message,
     });

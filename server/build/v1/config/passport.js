@@ -51,22 +51,28 @@ var options = {
 };
 exports.default = (function (passport) {
     passport.use(new passport_jwt_1.Strategy(options, function (jwt_payload, done) { return __awaiter(void 0, void 0, void 0, function () {
-        var user;
+        var foundUserRef, dbSnapshot, error_1;
         return __generator(this, function (_a) {
-            try {
-                user = models_1.db.users.get(jwt_payload.userName);
-                if (user) {
-                    return [2 /*return*/, done(null, user)];
-                }
-                else {
-                    throw new Error("No User Found");
-                }
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    foundUserRef = models_1.db.ref("/users/" + jwt_payload.userName + "}");
+                    return [4 /*yield*/, foundUserRef.once("value")];
+                case 1:
+                    dbSnapshot = _a.sent();
+                    if (dbSnapshot.exists()) {
+                        return [2 /*return*/, done(null, dbSnapshot.val())];
+                    }
+                    else {
+                        throw new Error("No User Found");
+                    }
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [2 /*return*/, done(null, false)];
+                case 3: return [2 /*return*/];
             }
-            catch (error) {
-                console.error(error);
-                return [2 /*return*/, done(null, false)];
-            }
-            return [2 /*return*/];
         });
     }); }));
 });

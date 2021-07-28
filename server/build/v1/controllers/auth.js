@@ -51,67 +51,151 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var models_1 = require("../models");
-var bcrypt_1 = __importDefault(require("bcrypt"));
 var uuid_1 = require("uuid");
 var helper_1 = require("../util/helper");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var bcrypt_1 = __importDefault(require("bcrypt"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+var JWT_SECRET = process.env.JWT_SECRET;
 var test = function (req, res) {
+    // const dbRef = db.ref("/"); // a reference to the global db
+    // try {
+    //   dbRef.once("value", (data) => {
+    //     return res.json({
+    //       message: "Success",
+    //       data,
+    //     });
+    //   });
+    // } catch {
+    //   res.json({
+    //     message: "sFailure",
+    //   });
+    // }
     res.json({
-        message: "Success",
+        message: "success",
     });
 };
-var login = function (req, res) {
-    res.json({
-        message: "It worked!",
-    });
-};
-var signUp = function (req, res) {
-    var _a = req.body, userName = _a.userName, passWord = _a.passWord;
-    console.log(userName, passWord);
-    // type guard the input
-    if (!userName || !passWord) {
-        return helper_1.handleError(new Error("Invalid UserName or Password"), 400, res);
-    }
-    try {
-        // check if username exists
-        if (models_1.db.users.has(userName)) {
-            return helper_1.handleError(new Error("Username Already Exists"), 400, res);
-        }
-        // if not, create new entry
-        var newUser_1 = {
-            id: uuid_1.v4(),
-            userName: userName,
-            passWord: passWord,
-            imageUrl: "",
-            createdAt: new Date().getTime(),
-        };
-        // Salt and Hash passWord
-        bcrypt_1.default.genSalt(12, function (error, salt) {
-            if (error)
-                return helper_1.handleError(error, 500, res);
-            bcrypt_1.default.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
-                return __generator(this, function (_a) {
+var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, userName, passWord, foundUserRef, dbSnapshot, user_1, isValid, payload, error_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, userName = _a.userName, passWord = _a.passWord;
+                // type guards
+                if (!userName || !passWord) {
+                    return [2 /*return*/, helper_1.handleError(new Error("Invalid UserName or Password"), 400, res)];
+                }
+                if (!JWT_SECRET) {
+                    return [2 /*return*/, helper_1.handleError(new Error("No Environment Variables"), 500, res)];
+                }
+                foundUserRef = models_1.db.ref("/users/" + userName);
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, foundUserRef.once("value")];
+            case 2:
+                dbSnapshot = _b.sent();
+                if (!dbSnapshot.exists()) {
+                    return [2 /*return*/, helper_1.handleError(new Error("No User Found"), 400, res)];
+                }
+                user_1 = dbSnapshot.val();
+                return [4 /*yield*/, bcrypt_1.default.compare(passWord, user_1.passWord)];
+            case 3:
+                isValid = _b.sent();
+                if (!isValid) {
+                    return [2 /*return*/, helper_1.handleError(new Error("Invalid Password"), 400, res)];
+                }
+                payload = {
+                    id: user_1.id,
+                    userName: user_1.userName,
+                };
+                jsonwebtoken_1.default.sign(payload, JWT_SECRET, { expiresIn: 7200 }, function (error, token) {
                     if (error)
-                        return [2 /*return*/, helper_1.handleError(error, 500, res)];
-                    newUser_1.passWord = hash;
-                    // For now update fake db
-                    models_1.db.users.set(newUser_1.id, newUser_1);
-                    // TODO - Save to Firebase
-                    // newUser.passWord = "";
-                    // send to login route? or return? We'll see.
-                    // for now we'll just create a new object and send it back
-                    // but in the future we'll just return the obj.
-                    console.log(models_1.db);
-                    return [2 /*return*/, res.status(201).json({
-                            created: __assign(__assign({}, newUser_1), { passWord: "", chats: [] }),
-                        })];
+                        return helper_1.handleError(error, 500, res);
+                    if (!token)
+                        return helper_1.handleError(new Error("No Token Found"), 500, res);
+                    var verified = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+                    res.json({
+                        token: "Bearer " + token,
+                        user: __assign(__assign({}, user_1), { passWord: "", chats: [] }),
+                    });
                 });
-            }); });
-        });
-    }
-    catch (error) {
-        return helper_1.handleError(error, 500, res);
-    }
-};
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _b.sent();
+                return [2 /*return*/, helper_1.handleError(error_1, 500, res)];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, userName, passWord, userRef, foundUserRef, foundUser, newUser_1, error_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, userName = _a.userName, passWord = _a.passWord;
+                // type guard the input
+                if (!userName || !passWord) {
+                    return [2 /*return*/, helper_1.handleError(new Error("Invalid UserName or Password"), 400, res)];
+                }
+                userRef = models_1.db.ref("/users");
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 3, , 4]);
+                foundUserRef = userRef.child("/" + userName);
+                return [4 /*yield*/, foundUserRef.once("value")];
+            case 2:
+                foundUser = _b.sent();
+                if (foundUser.exists()) {
+                    return [2 /*return*/, helper_1.handleError(new Error("Username Already Exists"), 400, res)];
+                }
+                newUser_1 = {
+                    id: uuid_1.v4(),
+                    userName: userName,
+                    passWord: passWord,
+                    imageUrl: "",
+                    createdAt: new Date().getTime(),
+                };
+                // Salt and Hash passWord
+                bcrypt_1.default.genSalt(12, function (error, salt) {
+                    if (error)
+                        return helper_1.handleError(error, 500, res);
+                    bcrypt_1.default.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
+                        var _a;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0:
+                                    if (error)
+                                        return [2 /*return*/, helper_1.handleError(error, 500, res)];
+                                    newUser_1.passWord = hash;
+                                    // Save to Firebase
+                                    return [4 /*yield*/, userRef.update((_a = {},
+                                            _a["" + newUser_1.userName] = newUser_1,
+                                            _a), function (err) {
+                                            if (err)
+                                                return helper_1.handleError(err, 500, res);
+                                            newUser_1.passWord = "";
+                                            return res.status(201).json({
+                                                created: __assign(__assign({}, newUser_1), { chats: [] }),
+                                            });
+                                        })];
+                                case 1:
+                                    // Save to Firebase
+                                    _b.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); });
+                });
+                return [3 /*break*/, 4];
+            case 3:
+                error_2 = _b.sent();
+                return [2 /*return*/, helper_1.handleError(error_2, 500, res)];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
 exports.default = {
     login: login,
     test: test,
