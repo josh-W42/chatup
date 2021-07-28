@@ -16,7 +16,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
-import { createUser, User } from "../../actions/user";
+import { createUser, User } from "../../actions/";
+import { StoreState } from "../../reducers";
+import { connect } from "react-redux";
 
 interface SignUpState {
   userName: string;
@@ -27,7 +29,11 @@ interface SignUpState {
   redirect: boolean;
 }
 
-const SignUpCard = (): JSX.Element => {
+interface SignUpCardProps {
+  createUser: Function;
+}
+
+const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   const [values, setValues] = useState<SignUpState>({
     userName: "",
     password: "",
@@ -57,6 +63,14 @@ const SignUpCard = (): JSX.Element => {
     }
   };
 
+  const getImageUpload = (): Blob | void => {
+    const inputEl: HTMLInputElement | null =
+      document.querySelector("#profileImage");
+    if (inputEl && inputEl.files) {
+      return inputEl.files[0] as Blob;
+    }
+  };
+
   const redirect = () => {
     setValues({
       ...values,
@@ -67,17 +81,16 @@ const SignUpCard = (): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newUser: User = {
-      id: Math.floor(Math.random() * 100),
-      username: values.userName,
-      password: values.password,
-      imageUrl: values.imageUrl,
-      chats: [],
-      createdAt: new Date(),
-    };
+    const newUser = new FormData();
+    newUser.append("userName", values.userName);
+    newUser.append("password", values.password);
 
-    createUser(newUser);
-    redirect();
+    if (values.imageUrl !== "") {
+      newUser.append("imageUrl", getImageUpload() || new Blob());
+    }
+
+    props.createUser(newUser);
+    // redirect();
   };
 
   if (values.redirect) {
@@ -172,7 +185,7 @@ const SignUpCard = (): JSX.Element => {
                       <input
                         onChange={handleImageUpload}
                         accept="image/*"
-                        id="chatImage"
+                        id="profileImage"
                         type="file"
                       />
                     </Grid>
@@ -222,5 +235,13 @@ const SignUpCard = (): JSX.Element => {
     </Box>
   );
 };
+
+const mapStateToProps = ({ user }: StoreState): { user: User } => {
+  return { user };
+};
+
+const SignUpCard = connect(mapStateToProps, {
+  createUser,
+})(_SignUpCard);
 
 export default SignUpCard;

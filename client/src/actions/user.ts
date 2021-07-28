@@ -1,9 +1,12 @@
 import { ChatPartial } from "./chatPartial";
 import { ActionTypes } from "./types";
+import axios, { AxiosResponse } from "axios";
+import { Dispatch } from "redux";
+
+const { REACT_APP_SERVER_URL } = process.env;
 
 export interface User {
-  id: number;
-  username: string;
+  userName: string;
   password: string;
   chats: ChatPartial[];
   imageUrl: string;
@@ -54,9 +57,29 @@ export const deleteChatPartial = (id: number): DeleteChatPartialAction => {
   };
 };
 
-export const createUser = (newUser: User): CreateUserAction => {
-  return {
-    type: ActionTypes.createUser,
-    payload: newUser,
+export const createUser = (newUser: FormData) => {
+  return async (dispatch: Dispatch<CreateUserAction>) => {
+    try {
+      if (REACT_APP_SERVER_URL) {
+        const response = await axios.post<User, AxiosResponse<User>>(
+          `${REACT_APP_SERVER_URL}/auth/signup`,
+          newUser,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        dispatch<CreateUserAction>({
+          type: ActionTypes.createUser,
+          payload: response.data,
+        });
+      } else {
+        throw new Error("No SERVER URL FOUND");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 };

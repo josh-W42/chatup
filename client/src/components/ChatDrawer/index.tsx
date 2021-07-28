@@ -72,8 +72,8 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <Avatar alt={props.user.username} src={props.user.imageUrl} />
-          <Typography>{props.user.username}</Typography>
+          <Avatar alt={props.user.userName} src={props.user.imageUrl} />
+          <Typography>{props.user.userName}</Typography>
           <IconButton onClick={handleDrawerTrigger}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
