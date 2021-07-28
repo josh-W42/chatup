@@ -1,7 +1,13 @@
+import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { router as v1Router } from "./v1";
+import passport from "passport";
+import passportConfig from "./v1/config/passport";
+
+passportConfig(passport);
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -10,7 +16,8 @@ const PORT = process.env.PORT || 8000;
 app.use(express.urlencoded({ extended: false })); // image parsing
 app.use(express.json()); // json parser
 app.use(morgan("dev")); // development logger
-app.use(cors());
+app.use(cors()); // allow CORS requests
+app.use(passport.initialize()); // passport init
 
 app.get("/api", (req: Request, res: Response) => {
   res.status(200).json({

@@ -24,3 +24,4 @@ let data: DataBase = {
 };
 
 export const db: DataBase = data;
+export * from "./types";

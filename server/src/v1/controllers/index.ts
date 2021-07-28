@@ -1,3 +1,3 @@
-import { handlers as auth } from "./auth";
+import auth from "./auth";
 
 export { auth };

@@ -7,4 +7,4 @@ router.get("/test", auth.test);
 router.post("/login", auth.login);
 router.post("/signup", auth.signUp);
 
-export { router };
+export default router;

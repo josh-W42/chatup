@@ -17,12 +17,20 @@ const signUp = (req: Request, res: Response): void => {
   const { userName, password }: { userName: string; password: string } =
     req.body;
 
+  console.log(userName, password);
   try {
     // check if username exists
-  } catch {}
+    if (db.users.has(userName)) throw new Error("Username is taken!");
+
+    // if not, create new entry
+  } catch (error) {
+    res.json({
+      message: error,
+    });
+  }
 };
 
-export const handlers = {
+export default {
   login,
   test,
   signUp,
