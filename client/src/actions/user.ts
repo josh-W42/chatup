@@ -6,6 +6,7 @@ import { Dispatch } from "redux";
 const { REACT_APP_SERVER_URL } = process.env;
 
 export interface User {
+  id: number;
   userName: string;
   password: string;
   chats: ChatPartial[];
