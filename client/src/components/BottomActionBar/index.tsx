@@ -9,7 +9,7 @@ import {
 import SendIcon from "@material-ui/icons/Send";
 import React, { SetStateAction, useState } from "react";
 import { connect } from "react-redux";
-import { Chat, Message, addMessage } from "../../actions";
+import { Chat, Message, addMessage, User } from "../../actions";
 import { StoreState } from "../../reducers";
 import { calculateWidth } from "./styles";
 
@@ -24,6 +24,7 @@ interface ActionBarProps {
   addMessage: typeof addMessage;
   chatUpdated: React.Dispatch<SetStateAction<boolean>>;
   chat: Chat;
+  user: User;
 }
 
 const _BottomActionBar = (props: ActionBarProps) => {
@@ -53,9 +54,9 @@ const _BottomActionBar = (props: ActionBarProps) => {
       const newMessage: Message = {
         id: Math.floor(Math.random() * 100),
         content: values.content,
-        author: "Jersh Wilison",
-        authorId: Math.floor(Math.random() * 3),
-        authorImageUrl: "https://picsum.photos/200",
+        author: props.user.userName,
+        authorId: props.user.id,
+        authorImageUrl: props.user.imageUrl,
         sentGraphic: values.sentGraphic,
         graphicUrls: values.graphicUrls,
         createdAt: new Date(),
@@ -130,8 +131,11 @@ const _BottomActionBar = (props: ActionBarProps) => {
   );
 };
 
-const mapStateToProps = ({ chat }: StoreState): { chat: Chat } => {
-  return { chat };
+const mapStateToProps = ({
+  chat,
+  user,
+}: StoreState): { chat: Chat; user: User } => {
+  return { chat, user };
 };
 
 const BottomActionBar = connect(mapStateToProps, {
