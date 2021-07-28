@@ -60,10 +60,12 @@ const _LoginCard = (props: LoginCardProps): JSX.Element => {
       passWord: values.password,
     };
 
-    props.loginUser(userCredentials, () => {
-      props.authorizeUser();
-    });
+    props.loginUser(userCredentials, onLoginSuccess);
     redirect();
+  };
+
+  const onLoginSuccess = (): void => {
+    props.authorizeUser();
   };
 
   const redirect = () => {

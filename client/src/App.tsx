@@ -38,13 +38,15 @@ function _App(props: AppProps): JSX.Element {
       // change auth state
       props.authorizeUser();
       // fetch userdata to store in redux store
-      props.fetchUser(payload, () => {
-        setAuthToken(null);
-        props.unAuthorizeUser();
-        localStorage.removeItem("jwtToken");
-      });
+      props.fetchUser(payload, onFetchError);
     }
   }, []);
+
+  const onFetchError = (): void => {
+    setAuthToken(null);
+    props.unAuthorizeUser();
+    localStorage.removeItem("jwtToken");
+  };
 
   return (
     <>
