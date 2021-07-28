@@ -31,6 +31,7 @@ interface SignUpState {
 
 interface SignUpCardProps {
   createUser: Function;
+  isAuth: boolean;
 }
 
 const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
@@ -100,7 +101,6 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
       props.createUser(newUser);
     }
 
-    props.createUser(newUser);
     redirect();
   };
 
@@ -246,8 +246,8 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   );
 };
 
-const mapStateToProps = ({ user }: StoreState): { user: User } => {
-  return { user };
+const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
+  return { isAuth };
 };
 
 const SignUpCard = connect(mapStateToProps, {

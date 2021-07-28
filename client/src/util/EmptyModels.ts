@@ -17,3 +17,7 @@ export const emptyChat: Chat = {
   messages: [],
   members: [],
 };
+
+export interface errorCallback extends Function {
+  (): void;
+}

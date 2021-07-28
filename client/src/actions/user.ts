@@ -1,7 +1,9 @@
-import { ChatPartial } from "./chatPartial";
-import { ActionTypes } from "./types";
 import axios, { AxiosResponse } from "axios";
 import { Dispatch } from "redux";
+import { AuthPayload, ActionTypes, ChatPartial } from "./index";
+import setAuthToken from "../util/setAuthToken";
+import { unAuthorizeUser } from "./auth";
+import { errorCallback } from "../util/EmptyModels";
 
 const { REACT_APP_SERVER_URL } = process.env;
 
@@ -26,7 +28,7 @@ export interface CreateUserAction {
 
 export interface LoginUserAction {
   type: ActionTypes.loginUser;
-  payload: string;
+  payload: User;
 }
 
 export interface DeleteUserAction {
@@ -44,6 +46,11 @@ export interface DeleteChatPartialAction {
   payload: number;
 }
 
+export interface FetchUserAction {
+  type: ActionTypes.fetchUser;
+  payload: User;
+}
+
 export const addChatPartial = (newChat: ChatPartial): AddChatPartialAction => {
   return {
     type: ActionTypes.addChatPartial,
@@ -58,36 +65,90 @@ export const deleteChatPartial = (id: number): DeleteChatPartialAction => {
   };
 };
 
+export const fetchUser = (userInfo: AuthPayload, errorCallback: Function) => {
+  return async (dispatch: Dispatch<FetchUserAction>) => {
+    try {
+      if (!REACT_APP_SERVER_URL) {
+        throw new Error("No SERVER URL FOUND");
+      }
+
+      const response = await axios.get<
+        AuthPayload,
+        AxiosResponse<{ user: User }>
+      >(`${REACT_APP_SERVER_URL}/users/${userInfo.userName}`);
+
+      dispatch<FetchUserAction>({
+        type: ActionTypes.fetchUser,
+        payload: response.data.user,
+      });
+    } catch (error) {
+      console.error(error);
+      errorCallback();
+    }
+  };
+};
+
 export const createUser = (newUser: Credentials, formData?: FormData) => {
   return async (dispatch: Dispatch<CreateUserAction>) => {
     try {
-      if (REACT_APP_SERVER_URL) {
-        const response = await axios.post<
-          Credentials,
-          AxiosResponse<{ created: User }>
-        >(`${REACT_APP_SERVER_URL}/auth/signup`, newUser);
-
-        /*
-          TODO - Access another route for updating a profile picture
-          axios.put<
-            User,
-            AxiosResponse<{ imageUrl: string }>
-          >(`${REACT_APP_SERVER_URL}/users/changeProfile`, newUser, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-        */
-
-        dispatch<CreateUserAction>({
-          type: ActionTypes.createUser,
-          payload: response.data.created,
-        });
-      } else {
+      if (!REACT_APP_SERVER_URL) {
         throw new Error("No SERVER URL FOUND");
       }
+
+      const response = await axios.post<
+        Credentials,
+        AxiosResponse<{ created: User }>
+      >(`${REACT_APP_SERVER_URL}/auth/signup`, newUser);
+
+      /*
+        TODO - Access another route for updating a profile picture
+        axios.put<
+          User,
+          AxiosResponse<{ imageUrl: string }>
+        >(`${REACT_APP_SERVER_URL}/users/changeProfile`, newUser, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      */
+
+      dispatch<CreateUserAction>({
+        type: ActionTypes.createUser,
+        payload: response.data.created,
+      });
     } catch (error) {
       console.error(error);
+    }
+  };
+};
+
+export const loginUser = (
+  userCredentials: Credentials,
+  successCallback: Function
+) => {
+  return async (dispatch: Dispatch<LoginUserAction>) => {
+    try {
+      if (!REACT_APP_SERVER_URL) {
+        throw new Error("No SERVER URL FOUND");
+      }
+
+      const response = await axios.post<
+        Credentials,
+        AxiosResponse<{ token: string; user: User }>
+      >(`${REACT_APP_SERVER_URL}/auth/login`, userCredentials);
+
+      // store token locally
+      localStorage.setItem("jwtToken", response.data.token);
+
+      dispatch<LoginUserAction>({
+        type: ActionTypes.loginUser,
+        payload: response.data.user,
+      });
+
+      successCallback();
+    } catch (error) {
+      console.error(error);
+      successCallback();
     }
   };
 };

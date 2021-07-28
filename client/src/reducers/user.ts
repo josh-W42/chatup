@@ -6,11 +6,12 @@ export const userReducer = (state: User = AnonymousUser, action: Action) => {
     case ActionTypes.createUser:
       return action.payload;
     case ActionTypes.loginUser:
-      // TODO
-      return state;
+      return action.payload;
     case ActionTypes.deleteUser:
       // TODO
       return state;
+    case ActionTypes.fetchUser:
+      return action.payload;
     case ActionTypes.addChatPartial:
       return { ...state, chats: [action.payload, ...state.chats] };
     case ActionTypes.deleteChatPartial:

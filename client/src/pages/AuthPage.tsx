@@ -1,18 +1,16 @@
 import { Redirect, Route, Switch } from "react-router-dom";
-import { User } from "../actions";
 import { StoreState } from "../reducers";
 import LoginCard from "../components/LoginCard";
 import SignUpCard from "../components/SignUpCard";
 import TopNav from "../components/TopNav";
 import { connect } from "react-redux";
-import { AnonymousUser } from "../util/EmptyModels";
 
 interface AuthPageProps {
-  user: User;
+  isAuth: boolean;
 }
 
 const _AuthPage = (props: AuthPageProps): JSX.Element => {
-  if (props.user.id !== AnonymousUser.id) {
+  if (props.isAuth) {
     return <Redirect to="/chats" />;
   }
 
@@ -27,8 +25,8 @@ const _AuthPage = (props: AuthPageProps): JSX.Element => {
   );
 };
 
-const mapStateToProps = ({ user }: StoreState): { user: User } => {
-  return { user };
+const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
+  return { isAuth };
 };
 
 const AuthPage = connect(mapStateToProps)(_AuthPage);

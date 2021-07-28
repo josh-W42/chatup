@@ -9,6 +9,9 @@ import {
   LoginUserAction,
   FetchChatAction,
   DeleteUserAction,
+  AuthorizeUserAction,
+  UnAuthorizeUserAction,
+  FetchUserAction,
 } from "./index";
 
 export enum ActionTypes {
@@ -22,6 +25,9 @@ export enum ActionTypes {
   createUser,
   deleteUser,
   loginUser,
+  authorizeUser,
+  unAuthorizeUser,
+  fetchUser,
 }
 
 export type Action =
@@ -34,4 +40,7 @@ export type Action =
   | FetchChatAction
   | CreateUserAction
   | DeleteUserAction
-  | LoginUserAction;
+  | LoginUserAction
+  | AuthorizeUserAction
+  | UnAuthorizeUserAction
+  | FetchUserAction;

@@ -13,19 +13,30 @@ import {
   InputAdornment,
   IconButton,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { Credentials, loginUser, authorizeUser } from "../../actions";
+import { StoreState } from "../../reducers";
+import { connect } from "react-redux";
 
 interface LoginState {
   userName: string;
   password: string;
   showPassword: boolean;
+  redirect: boolean;
 }
 
-const LoginCard = (): JSX.Element => {
+interface LoginCardProps {
+  isAuth: boolean;
+  loginUser: Function;
+  authorizeUser: typeof authorizeUser;
+}
+
+const _LoginCard = (props: LoginCardProps): JSX.Element => {
   const [values, setValues] = useState<LoginState>({
     userName: "",
     password: "",
     showPassword: false,
+    redirect: false,
   });
 
   const handleChange =
@@ -44,18 +55,29 @@ const LoginCard = (): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // props.addChatPartial(newChat);
-    // props.closeNewChat();
-    reset();
+    const userCredentials: Credentials = {
+      userName: values.userName,
+      passWord: values.password,
+    };
+
+    props.loginUser(userCredentials, () => {
+      props.authorizeUser();
+    });
+    redirect();
   };
 
-  const reset = () => {
+  const redirect = () => {
     setValues({
       userName: "",
       showPassword: false,
       password: "",
+      redirect: true,
     });
   };
+
+  if (values.redirect) {
+    return <Redirect to="/chats" />;
+  }
 
   return (
     <Box>
@@ -139,5 +161,14 @@ const LoginCard = (): JSX.Element => {
     </Box>
   );
 };
+
+const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
+  return { isAuth };
+};
+
+const LoginCard = connect(mapStateToProps, {
+  loginUser,
+  authorizeUser,
+})(_LoginCard);
 
 export default LoginCard;
