@@ -21,6 +21,7 @@ import {
 import MessageList from "../MessageList";
 import BottomActionBar from "../BottomActionBar";
 import { useEffect } from "react";
+import MenuButton from "../MenuButton";
 
 interface DrawerProps {
   newChatOpen: boolean;
@@ -68,6 +69,8 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
           <Typography variant="h6" noWrap component="h2">
             {props.chat.name}
           </Typography>
+          <Box sx={{ flexGrow: 1 }}></Box>
+          <MenuButton />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

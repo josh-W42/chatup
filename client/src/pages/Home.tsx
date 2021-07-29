@@ -1,11 +1,7 @@
-import TopNav from "../components/TopNav";
+import { Redirect } from "react-router-dom";
 
 const Home = (): JSX.Element => {
-  return (
-    <div>
-      <TopNav />
-    </div>
-  );
+  return <Redirect to="/auth/login" />;
 };
 
 export default Home;
