@@ -9,3 +9,4 @@ var routes_1 = __importDefault(require("./routes"));
 var router = express_1.Router();
 exports.router = router;
 router.use("/auth", routes_1.default.auth);
+router.use("/users", routes_1.default.user);

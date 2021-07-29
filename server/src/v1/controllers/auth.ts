@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { db, Payload, RequestWithBody, User, uuid } from "../models";
 import { v4 as uuidv4 } from "uuid";
-import { handleError } from "../util/helper";
+import { getAllChats, handleError } from "../util/helper";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -61,21 +61,22 @@ const login = async (req: RequestWithBody, res: Response) => {
     }
 
     // sign Json web tokens
-
     const payload: Payload = {
       id: user.id,
       userName: user.userName,
     };
 
-    jwt.sign(payload, JWT_SECRET, { expiresIn: 7200 }, (error, token) => {
+    jwt.sign(payload, JWT_SECRET, { expiresIn: 7200 }, async (error, token) => {
       if (error) return handleError(error, 500, res);
       if (!token) return handleError(new Error("No Token Found"), 500, res);
 
       const verified = jwt.verify(token, JWT_SECRET);
 
+      const chats = await getAllChats(user.userName);
+
       res.json({
         token: `Bearer ${token}`,
-        user: { ...user, passWord: "", chats: [] },
+        user: { ...user, passWord: "", chats },
       });
     });
   } catch (error) {
@@ -120,7 +121,12 @@ const signUp = async (req: RequestWithBody, res: Response) => {
 
         newUser.passWord = hash;
 
-        // Save to Firebase
+        // initialize a member to chat resource
+        db.ref("/membersToChats").update({
+          [`${newUser.userName}`]: "no chats",
+        });
+
+        // Save the user
         await userRef.update(
           {
             [`${newUser.userName}`]: newUser,
@@ -128,9 +134,8 @@ const signUp = async (req: RequestWithBody, res: Response) => {
           (err) => {
             if (err) return handleError(err, 500, res);
 
-            newUser.passWord = "";
             return res.status(201).json({
-              created: { ...newUser, chats: [] },
+              created: { ...newUser, passWord: "", chats: [] },
             });
           }
         );

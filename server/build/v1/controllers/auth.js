@@ -110,17 +110,27 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     id: user_1.id,
                     userName: user_1.userName,
                 };
-                jsonwebtoken_1.default.sign(payload, JWT_SECRET, { expiresIn: 7200 }, function (error, token) {
-                    if (error)
-                        return helper_1.handleError(error, 500, res);
-                    if (!token)
-                        return helper_1.handleError(new Error("No Token Found"), 500, res);
-                    var verified = jsonwebtoken_1.default.verify(token, JWT_SECRET);
-                    res.json({
-                        token: "Bearer " + token,
-                        user: __assign(__assign({}, user_1), { passWord: "", chats: [] }),
+                jsonwebtoken_1.default.sign(payload, JWT_SECRET, { expiresIn: 7200 }, function (error, token) { return __awaiter(void 0, void 0, void 0, function () {
+                    var verified, chats;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (error)
+                                    return [2 /*return*/, helper_1.handleError(error, 500, res)];
+                                if (!token)
+                                    return [2 /*return*/, helper_1.handleError(new Error("No Token Found"), 500, res)];
+                                verified = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+                                return [4 /*yield*/, helper_1.getAllChats(user_1.userName)];
+                            case 1:
+                                chats = _a.sent();
+                                res.json({
+                                    token: "Bearer " + token,
+                                    user: __assign(__assign({}, user_1), { passWord: "", chats: chats }),
+                                });
+                                return [2 /*return*/];
+                        }
                     });
-                });
+                }); });
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _b.sent();
@@ -162,27 +172,30 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     if (error)
                         return helper_1.handleError(error, 500, res);
                     bcrypt_1.default.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
-                        var _a;
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
+                        var _a, _b;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
                                 case 0:
                                     if (error)
                                         return [2 /*return*/, helper_1.handleError(error, 500, res)];
                                     newUser_1.passWord = hash;
-                                    // Save to Firebase
-                                    return [4 /*yield*/, userRef.update((_a = {},
-                                            _a["" + newUser_1.userName] = newUser_1,
-                                            _a), function (err) {
+                                    // initialize a member to chat resource
+                                    models_1.db.ref("/membersToChats").update((_a = {},
+                                        _a["" + newUser_1.userName] = "no chats",
+                                        _a));
+                                    // Save the user
+                                    return [4 /*yield*/, userRef.update((_b = {},
+                                            _b["" + newUser_1.userName] = newUser_1,
+                                            _b), function (err) {
                                             if (err)
                                                 return helper_1.handleError(err, 500, res);
-                                            newUser_1.passWord = "";
                                             return res.status(201).json({
-                                                created: __assign(__assign({}, newUser_1), { chats: [] }),
+                                                created: __assign(__assign({}, newUser_1), { passWord: "", chats: [] }),
                                             });
                                         })];
                                 case 1:
-                                    // Save to Firebase
-                                    _b.sent();
+                                    // Save the user
+                                    _c.sent();
                                     return [2 /*return*/];
                             }
                         });

@@ -20,12 +20,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
       },
       ...
     },
-    "members": {
+    "chatsToMembers": {
       "23483932": {
         "username": { "nickname" || "username" },
         ...
       },
       ...
     }
+    "membersToChats": {
+      "userName": {
+        "23483932": true,
+        ...
+      },
+      ...
+    },
   }
 */
