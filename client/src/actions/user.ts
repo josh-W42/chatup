@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { Dispatch } from "redux";
+import setAuthToken from "../util/setAuthToken";
 import { AuthPayload, ActionTypes, ChatPartial } from "./index";
 
 const { REACT_APP_SERVER_URL } = process.env;
@@ -125,6 +126,7 @@ export const loginUser = (
 
       // store token locally
       localStorage.setItem("jwtToken", response.data.token);
+      setAuthToken(response.data.token);
 
       dispatch<LoginUserAction>({
         type: ActionTypes.loginUser,

@@ -13,6 +13,7 @@ import {
 import { StoreState } from "./reducers";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./util/setAuthToken";
+import SocketAdapter from "./components/SocketAdapter";
 
 interface AppProps {
   authorizeUser: typeof authorizeUser;
@@ -50,6 +51,7 @@ function _App(props: AppProps): JSX.Element {
 
   return (
     <>
+      <SocketAdapter />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/auth" component={AuthPage} />
