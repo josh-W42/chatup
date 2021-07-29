@@ -54,7 +54,7 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
 
   const renderMessages = (): JSX.Element[] => {
     let lastDate = { date: new Date(2000, 10) };
-    let lastHour = { hour: lastDate.date.getHours() };
+    let lastHour = { hour: -1 };
     let output: JSX.Element[] = [];
 
     props.chat.messages.forEach((message: Message) => {

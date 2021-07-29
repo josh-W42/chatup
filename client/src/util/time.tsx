@@ -3,12 +3,9 @@ import { ListItem, Typography, Grid } from "@material-ui/core";
 /*
   Helper function for displaying the difference between dates.
 */
-export const timeSinceDate = (pastDate: Date): string => {
+export const timeSinceDate = (pastDate: number): string => {
   const currentTime = new Date();
-
-  let timeDiff = millisecondsToSeconds(
-    currentTime.getTime() - pastDate.getTime()
-  );
+  let timeDiff = millisecondsToSeconds(currentTime.getTime() - pastDate);
 
   if (timeDiff === 0) return "<1s ago";
 

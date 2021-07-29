@@ -30,6 +30,10 @@ export const postMessage = async (
       fetch is required to upload the images to the API.
     */
 
+    if (!response.data.message) {
+      throw new Error("No Message Received");
+    }
+
     successCallBack(response.data.message);
   } catch (error) {
     console.error(error);
