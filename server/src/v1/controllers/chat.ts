@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { json, Request, Response } from "express";
 import { Chat, db, RequestWithBody, User } from "../models";
 import { v4 as uuidv4 } from "uuid";
 import { getAllMessages, handleError } from "../util/helper";
+import { toArray } from "../util/helper";
 
 const createChat = async (req: RequestWithBody, res: Response) => {
   const { name } = req.body;
@@ -38,7 +39,7 @@ const createChat = async (req: RequestWithBody, res: Response) => {
 
     // create an opposing link
     db.ref("/chatsToMembers").update({
-      [`${newChat.id}`]: user,
+      [`${newChat.id}`]: { user },
     });
 
     // initialize the messages data
@@ -68,7 +69,52 @@ const getChat = async (req: Request, res: Response) => {
     res.json({
       chat: { ...chat, messages },
     });
-  } catch {}
+  } catch (error) {
+    handleError(error, 500, res);
+  }
 };
 
-export default { createChat, getChat };
+const getAllChats = async (req: Request, res: Response) => {
+  try {
+    const chatsSnapshot = await db.ref("/chats").once("value");
+    const chats = toArray<Chat>(chatsSnapshot);
+
+    res.json({
+      chats: chats,
+    });
+  } catch (error) {
+    handleError(error, 500, res);
+  }
+};
+
+const joinChat = async (req: Request, res: Response) => {
+  const user = req.user as User;
+  const { id } = req.params;
+
+  try {
+    // check if the chat exists
+    const chatSnapShot = await db.ref(`/chats/${id}`).once("value");
+    if (!chatSnapShot.exists()) {
+      handleError(new Error("Chat does not exist"), 400, res);
+    }
+
+    // add the chat to the user
+    user.passWord = "";
+    db.ref(`/chatsToMembers/${id}`).update({
+      [`${user.userName}`]: user,
+    });
+
+    // update associated table
+    db.ref(`/membersToChats/${user.userName}`).update({
+      [`${id}`]: chatSnapShot.val(),
+    });
+
+    res.json({
+      chat: chatSnapShot.val(),
+    });
+  } catch (error) {
+    handleError(error, 500, res);
+  }
+};
+
+export default { createChat, getChat, getAllChats, joinChat };

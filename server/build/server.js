@@ -47,11 +47,15 @@ io.on("connection", function (socket) {
         socket.leave(id);
     });
     socket.on("join room", function (data) {
+        console.log(data.id);
         var id = data.id;
         socket.join(id);
     });
     socket.on("new message", function (data) {
-        io.to(data.chatId).emit("new message", data);
+        // console.log(data.chatId);
+        // console.log(socket.rooms);
+        io.to(data.chatId).emit("update messages", data);
+        // socket.to(data.chatId).emit("new message", data);
     });
     socket.on("disconnect", function () {
         console.log("disconnect: " + socket.id);

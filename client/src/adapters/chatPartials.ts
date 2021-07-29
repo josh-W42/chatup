@@ -49,7 +49,33 @@ export const fetchChatPartials = async (
       AxiosResponse<{ chats: ChatPartial[] }>
     >(`${REACT_APP_SERVER_URL}chats/all`);
 
+    if (!response.data.chats) {
+      throw new Error("Couldn't Find Any Chats");
+    }
+
     successCallBack(response.data.chats);
+  } catch (error) {
+    console.error(error);
+    errorCallback();
+  }
+};
+
+export const joinChat = async (
+  id: string,
+  errorCallback: () => void,
+  successCallBack: (chat: ChatPartial) => void
+) => {
+  try {
+    if (!REACT_APP_SERVER_URL) {
+      throw new Error("NO SERVER URL FOUND");
+    }
+
+    const response = await axios.put<
+      null,
+      AxiosResponse<{ chat: ChatPartial }>
+    >(`${REACT_APP_SERVER_URL}chats/${id}/join`);
+
+    successCallBack(response.data.chat);
   } catch (error) {
     console.error(error);
     errorCallback();

@@ -39,17 +39,13 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
       console.log(data);
     });
 
-    socket.on("new message", (data: NewContentPayload) => {
-      if (props.chat.id === data.chatId) {
-        props.chat.messages.push(data.message);
-      }
+    socket.on("update messages", (data: NewContentPayload) => {
+      props.chat.messages.push(data.message);
     });
 
     return () => {
       socket.off("connect");
       socket.off("disconnect");
-      socket.off("message");
-      socket.off("new message");
     };
   }, []);
 

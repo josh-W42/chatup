@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
-} from "@material-ui/core";
+import { Card, CardContent, Typography } from "@material-ui/core";
 import SearchBar from "../SearchBar";
 
 const ChatSearchCard = (): JSX.Element => {

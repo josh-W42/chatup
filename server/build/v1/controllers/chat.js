@@ -49,6 +49,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var models_1 = require("../models");
 var helper_1 = require("../util/helper");
+var helper_2 = require("../util/helper");
 var createChat = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var name, user, newChat, newChatRef, error_1;
     var _a, _b, _c;
@@ -84,7 +85,7 @@ var createChat = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 user.passWord = "";
                 // create an opposing link
                 models_1.db.ref("/chatsToMembers").update((_b = {},
-                    _b["" + newChat.id] = user,
+                    _b["" + newChat.id] = { user: user },
                     _b));
                 // initialize the messages data
                 models_1.db.ref("/messages").update((_c = {},
@@ -100,33 +101,94 @@ var createChat = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 var getChat = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, chatSnapShot, chat, messages, _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var id, chatSnapShot, chat, messages, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
                 id = req.params.id;
-                _b.label = 1;
+                _a.label = 1;
             case 1:
-                _b.trys.push([1, 4, , 5]);
+                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, models_1.db.ref("/chats/" + id).once("value")];
             case 2:
-                chatSnapShot = _b.sent();
+                chatSnapShot = _a.sent();
                 if (!chatSnapShot.exists()) {
                     return [2 /*return*/, helper_1.handleError(new Error("Chat Does Not Exist"), 400, res)];
                 }
                 chat = chatSnapShot.val();
                 return [4 /*yield*/, helper_1.getAllMessages(chat.id)];
             case 3:
-                messages = _b.sent();
+                messages = _a.sent();
                 res.json({
                     chat: __assign(__assign({}, chat), { messages: messages }),
                 });
                 return [3 /*break*/, 5];
             case 4:
-                _a = _b.sent();
+                error_2 = _a.sent();
+                helper_1.handleError(error_2, 500, res);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
     });
 }); };
-exports.default = { createChat: createChat, getChat: getChat };
+var getAllChats = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var chatsSnapshot, chats, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, models_1.db.ref("/chats").once("value")];
+            case 1:
+                chatsSnapshot = _a.sent();
+                chats = helper_2.toArray(chatsSnapshot);
+                res.json({
+                    chats: chats,
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                error_3 = _a.sent();
+                helper_1.handleError(error_3, 500, res);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+var joinChat = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, id, chatSnapShot, error_4;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                user = req.user;
+                id = req.params.id;
+                _c.label = 1;
+            case 1:
+                _c.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, models_1.db.ref("/chats/" + id).once("value")];
+            case 2:
+                chatSnapShot = _c.sent();
+                if (!chatSnapShot.exists()) {
+                    helper_1.handleError(new Error("Chat does not exist"), 400, res);
+                }
+                // add the chat to the user
+                user.passWord = "";
+                models_1.db.ref("/chatsToMembers/" + id).update((_a = {},
+                    _a["" + user.userName] = user,
+                    _a));
+                // update associated table
+                models_1.db.ref("/membersToChats/" + user.userName).update((_b = {},
+                    _b["" + id] = chatSnapShot.val(),
+                    _b));
+                res.json({
+                    chat: chatSnapShot.val(),
+                });
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _c.sent();
+                helper_1.handleError(error_4, 500, res);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = { createChat: createChat, getChat: getChat, getAllChats: getAllChats, joinChat: joinChat };

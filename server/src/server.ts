@@ -54,12 +54,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join room", (data: JoinLeavePayload) => {
+    console.log(data.id);
     const id: string = data.id;
     socket.join(id);
   });
 
   socket.on("new message", (data: NewContentPayload) => {
-    io.to(data.chatId).emit("new message", data);
+    // console.log(data.chatId);
+    // console.log(socket.rooms);
+    io.to(data.chatId).emit("update messages", data);
+    // socket.to(data.chatId).emit("new message", data);
   });
 
   socket.on("disconnect", () => {

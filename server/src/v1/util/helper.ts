@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { Chat, db, Message } from "../models";
+import { DataSnapshot } from "@firebase/database-types";
 
 export const handleError = (
   err: Error,
@@ -22,13 +23,7 @@ export const getAllChats = async (userName: string) => {
     if (typeof chatsSnapshot.val() === "string") {
       return [];
     } else {
-      const chats: Chat[] = [];
-
-      chatsSnapshot.forEach((dataSnapshot) => {
-        chats.push(dataSnapshot.val());
-      });
-
-      return chats.reverse();
+      return toArray<Chat>(chatsSnapshot).reverse();
     }
   } catch (error) {
     console.error(error);
@@ -46,16 +41,18 @@ export const getAllMessages = async (id: string) => {
     if (typeof messagesSnapshot === "string") {
       return [];
     } else {
-      const messages: Message[] = [];
-
-      messagesSnapshot.forEach((dataSnapshot) => {
-        messages.push(dataSnapshot.val());
-      });
-
-      return messages;
+      return toArray<Message>(messagesSnapshot);
     }
   } catch (error) {
     console.error(error);
   }
   return [];
+};
+
+export const toArray = <T>(snapshot: DataSnapshot): T[] => {
+  const output: T[] = [];
+  snapshot.forEach((dataSnapshot) => {
+    output.push(dataSnapshot.val());
+  });
+  return output;
 };

@@ -4,6 +4,8 @@ var express_1 = require("express");
 var controllers_1 = require("../controllers");
 var passport_1 = require("passport");
 var router = express_1.Router();
+router.get("/all", passport_1.authenticate("jwt", { session: false }), controllers_1.chat.getAllChats);
 router.get("/:id", passport_1.authenticate("jwt", { session: false }), controllers_1.chat.getChat);
+router.put("/:id/join", passport_1.authenticate("jwt", { session: false }), controllers_1.chat.joinChat);
 router.post("/new", passport_1.authenticate("jwt", { session: false }), controllers_1.chat.createChat);
 exports.default = router;

@@ -4,7 +4,14 @@ import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 import { timeSinceDate } from "../../util/time";
 import { Link } from "react-router-dom";
-import { ListItem, List, Avatar, Typography, Grid } from "@material-ui/core";
+import {
+  ListItem,
+  List,
+  Avatar,
+  Typography,
+  Grid,
+  Tooltip,
+} from "@material-ui/core";
 
 interface ChatListProps {
   user: User;
@@ -14,36 +21,37 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
   const renderChats = (): JSX.Element[] => {
     return props.user.chats.map((chat: ChatPartial) => {
       return (
-        <Link
-          style={{ color: "inherit", textDecoration: "none" }}
-          to={`/chats/${chat.id}`}
-          key={chat.id}
-        >
-          <ListItem button tabIndex={-1} sx={{ overflow: "revert" }}>
-            <StyledBadge
-              overlap="circular"
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              variant="dot"
-            >
-              <Avatar alt={chat.name} src={chat.imageUrl} />
-            </StyledBadge>
-            <Grid sx={{ marginLeft: 4 }} container direction="column">
-              <Typography variant="h6" component="span">
-                {chat.name}
-              </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                component="span"
+        <Tooltip key={chat.id} title={chat.name} placement="right">
+          <Link
+            style={{ color: "inherit", textDecoration: "none" }}
+            to={`/chats/${chat.id}`}
+          >
+            <ListItem button tabIndex={-1} sx={{ overflow: "revert" }}>
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="standard"
               >
-                {timeSinceDate(chat.lastUpdated)}
-              </Typography>
-              <Typography variant="caption" component="span">
-                {chat.lastMessage}
-              </Typography>
-            </Grid>
-          </ListItem>
-        </Link>
+                <Avatar alt={chat.name} src={chat.imageUrl} />
+              </StyledBadge>
+              <Grid sx={{ marginLeft: 4 }} container direction="column">
+                <Typography variant="h6" component="span">
+                  {chat.name}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  component="span"
+                >
+                  {timeSinceDate(chat.lastUpdated)}
+                </Typography>
+                <Typography variant="caption" component="span">
+                  {chat.lastMessage}
+                </Typography>
+              </Grid>
+            </ListItem>
+          </Link>
+        </Tooltip>
       );
     });
   };

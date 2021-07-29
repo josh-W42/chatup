@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllMessages = exports.getAllChats = exports.handleError = void 0;
+exports.toArray = exports.getAllMessages = exports.getAllChats = exports.handleError = void 0;
 var models_1 = require("../models");
 var handleError = function (err, statusCode, res) {
     console.error(err.message);
@@ -46,7 +46,7 @@ var handleError = function (err, statusCode, res) {
 };
 exports.handleError = handleError;
 var getAllChats = function (userName) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatsSnapshot, chats_1, error_1;
+    var chatsSnapshot, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -61,11 +61,7 @@ var getAllChats = function (userName) { return __awaiter(void 0, void 0, void 0,
                     return [2 /*return*/, []];
                 }
                 else {
-                    chats_1 = [];
-                    chatsSnapshot.forEach(function (dataSnapshot) {
-                        chats_1.push(dataSnapshot.val());
-                    });
-                    return [2 /*return*/, chats_1.reverse()];
+                    return [2 /*return*/, exports.toArray(chatsSnapshot).reverse()];
                 }
                 return [3 /*break*/, 3];
             case 2:
@@ -78,7 +74,7 @@ var getAllChats = function (userName) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.getAllChats = getAllChats;
 var getAllMessages = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-    var messagesSnapshot, messages_1, error_2;
+    var messagesSnapshot, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -93,11 +89,7 @@ var getAllMessages = function (id) { return __awaiter(void 0, void 0, void 0, fu
                     return [2 /*return*/, []];
                 }
                 else {
-                    messages_1 = [];
-                    messagesSnapshot.forEach(function (dataSnapshot) {
-                        messages_1.push(dataSnapshot.val());
-                    });
-                    return [2 /*return*/, messages_1];
+                    return [2 /*return*/, exports.toArray(messagesSnapshot)];
                 }
                 return [3 /*break*/, 3];
             case 2:
@@ -109,3 +101,11 @@ var getAllMessages = function (id) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getAllMessages = getAllMessages;
+var toArray = function (snapshot) {
+    var output = [];
+    snapshot.forEach(function (dataSnapshot) {
+        output.push(dataSnapshot.val());
+    });
+    return output;
+};
+exports.toArray = toArray;
