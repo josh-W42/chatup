@@ -52,8 +52,6 @@ export const getAllMessages = async (id: string) => {
         messages.push(dataSnapshot.val());
       });
 
-      messages.reverse();
-
       return messages;
     }
   } catch (error) {

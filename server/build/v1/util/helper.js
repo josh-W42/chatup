@@ -97,7 +97,6 @@ var getAllMessages = function (id) { return __awaiter(void 0, void 0, void 0, fu
                     messagesSnapshot.forEach(function (dataSnapshot) {
                         messages_1.push(dataSnapshot.val());
                     });
-                    messages_1.reverse();
                     return [2 /*return*/, messages_1];
                 }
                 return [3 /*break*/, 3];

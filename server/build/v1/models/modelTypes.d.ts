@@ -24,6 +24,7 @@ export interface Message {
     author: string;
     content: string;
     authorImageUrl: string;
+    authorId: string;
     sentGraphic: boolean;
     graphicUrls: string[];
     createdAt: number;
