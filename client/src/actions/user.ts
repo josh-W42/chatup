@@ -38,7 +38,7 @@ export interface FetchUserAction {
   payload: User;
 }
 
-export const fetchUser = (userInfo: AuthPayload, errorCallback: Function) => {
+export const fetchUser = (userInfo: AuthPayload, errorCallback: () => void) => {
   return async (dispatch: Dispatch<FetchUserAction>) => {
     try {
       if (!REACT_APP_SERVER_URL) {
@@ -67,8 +67,8 @@ export const fetchUser = (userInfo: AuthPayload, errorCallback: Function) => {
 
 export const createUser = (
   newUser: Credentials,
-  errorCallback: Function,
-  successCallback: Function,
+  errorCallback: () => void,
+  successCallback: () => void,
   formData?: FormData
 ) => {
   return async (dispatch: Dispatch<CreateUserAction>) => {
@@ -109,8 +109,8 @@ export const createUser = (
 
 export const loginUser = (
   userCredentials: Credentials,
-  errorCallback: Function,
-  successCallback: Function
+  errorCallback: () => void,
+  successCallback: () => void
 ) => {
   return async (dispatch: Dispatch<LoginUserAction>) => {
     try {

@@ -10,7 +10,7 @@ export interface ChatPartialPayload {
 
 export const postChatPartial = async (
   chatInfo: ChatPartialPayload,
-  errorCallBack: Function,
+  errorCallBack: () => void,
   successCallBack: (newChat: ChatPartial) => void,
   formData?: FormData
 ) => {
