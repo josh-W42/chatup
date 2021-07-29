@@ -5,7 +5,6 @@ const { REACT_APP_SERVER_URL } = process.env;
 
 export interface ChatPartialPayload {
   name: string;
-  imageUrl: string;
 }
 
 export const postChatPartial = async (

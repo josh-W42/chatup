@@ -65,7 +65,6 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
 
     const newChat: ChatPartialPayload = {
       name: values.name,
-      imageUrl: values.imageUrl,
     };
 
     postChatPartial(newChat, onPostFailure, onPostSuccess);
