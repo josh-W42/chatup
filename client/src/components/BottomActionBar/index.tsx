@@ -10,6 +10,7 @@ import SendIcon from "@material-ui/icons/Send";
 import React, { SetStateAction, useState } from "react";
 import { connect } from "react-redux";
 import { Chat, Message, addMessage, User } from "../../actions";
+import { MessagePayload, postMessage } from "../../adapters";
 import { StoreState } from "../../reducers";
 import { calculateWidth } from "./styles";
 
@@ -51,20 +52,26 @@ const _BottomActionBar = (props: ActionBarProps) => {
 
   const sendMessage = () => {
     if (values.sentGraphic || values.content !== "") {
-      const newMessage: Message = {
-        id: "234923948329",
+      const newMessage: MessagePayload = {
+        chatId: props.chat.id,
         content: values.content,
         author: props.user.userName,
         authorId: props.user.id,
         authorImageUrl: props.user.imageUrl,
         sentGraphic: values.sentGraphic,
         graphicUrls: values.graphicUrls,
-        createdAt: new Date().getTime(),
       };
-
-      props.addMessage(newMessage, props.chat.id);
+      postMessage(newMessage, onPostError, onPostSuccess);
       reset();
     }
+  };
+
+  const onPostError = () => {
+    // trigger warning notification
+  };
+
+  const onPostSuccess = (newMessage: Message) => {
+    props.addMessage(newMessage, props.chat.id);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
