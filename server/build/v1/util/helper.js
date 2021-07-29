@@ -46,13 +46,14 @@ var handleError = function (err, statusCode, res) {
 };
 exports.handleError = handleError;
 var getAllChats = function (userName) { return __awaiter(void 0, void 0, void 0, function () {
-    var chatsSnapshot, error_1;
+    var chatsSnapshot, chats_1, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, models_1.db
                         .ref("/membersToChats/" + userName)
+                        .orderByChild("lastUpdated")
                         .once("value")];
             case 1:
                 chatsSnapshot = _a.sent();
@@ -60,9 +61,11 @@ var getAllChats = function (userName) { return __awaiter(void 0, void 0, void 0,
                     return [2 /*return*/, []];
                 }
                 else {
-                    chatsSnapshot.forEach(function (snapShot) {
-                        console.log(snapShot.val());
+                    chats_1 = [];
+                    chatsSnapshot.forEach(function (dataSnapshot) {
+                        chats_1.push(dataSnapshot.val());
                     });
+                    return [2 /*return*/, chats_1.reverse()];
                 }
                 return [3 /*break*/, 3];
             case 2:

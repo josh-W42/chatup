@@ -16,14 +16,19 @@ export const getAllChats = async (userName: string) => {
   try {
     const chatsSnapshot = await db
       .ref(`/membersToChats/${userName}`)
+      .orderByChild("lastUpdated")
       .once("value");
 
     if (typeof chatsSnapshot.val() === "string") {
       return [];
     } else {
-      chatsSnapshot.forEach((snapShot) => {
-        console.log(snapShot.val());
+      const chats: Chat[] = [];
+
+      chatsSnapshot.forEach((dataSnapshot) => {
+        chats.push(dataSnapshot.val());
       });
+
+      return chats.reverse();
     }
   } catch (error) {
     console.error(error);
