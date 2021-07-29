@@ -14,40 +14,10 @@ export interface Chat {
   messages: Message[];
 }
 
-export interface AddMessageActon {
-  type: ActionTypes.addMessage;
-  payload: Message;
-}
-
-export interface DeleteMessageAction {
-  type: ActionTypes.deleteMessage;
-  payload: string;
-}
-
 export interface FetchChatAction {
   type: ActionTypes.fetchChat;
   payload: Chat;
 }
-
-export const addMessage = (
-  newMessage: Message,
-  chatId: string
-): AddMessageActon => {
-  return {
-    type: ActionTypes.addMessage,
-    payload: newMessage,
-  };
-};
-
-export const deleteMessage = (
-  id: string,
-  chatId: string
-): DeleteMessageAction => {
-  return {
-    type: ActionTypes.deleteMessage,
-    payload: id,
-  };
-};
 
 export const fetchChat = (id: number, errorCallback: () => void) => {
   return async (dispatch: Dispatch<FetchChatAction>) => {
