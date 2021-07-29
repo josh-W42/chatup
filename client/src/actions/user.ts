@@ -1,9 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { Dispatch } from "redux";
 import { AuthPayload, ActionTypes, ChatPartial } from "./index";
-import setAuthToken from "../util/setAuthToken";
-import { unAuthorizeUser } from "./auth";
-import { errorCallback } from "../util/EmptyModels";
 
 const { REACT_APP_SERVER_URL } = process.env;
 
@@ -77,6 +74,10 @@ export const fetchUser = (userInfo: AuthPayload, errorCallback: Function) => {
         AxiosResponse<{ user: User }>
       >(`${REACT_APP_SERVER_URL}/users/${userInfo.userName}`);
 
+      if (!response.data.user) {
+        throw new Error("User No Returned");
+      }
+
       dispatch<FetchUserAction>({
         type: ActionTypes.fetchUser,
         payload: response.data.user,
@@ -88,7 +89,12 @@ export const fetchUser = (userInfo: AuthPayload, errorCallback: Function) => {
   };
 };
 
-export const createUser = (newUser: Credentials, formData?: FormData) => {
+export const createUser = (
+  newUser: Credentials,
+  errorCallback: Function,
+  successCallback: Function,
+  formData?: FormData
+) => {
   return async (dispatch: Dispatch<CreateUserAction>) => {
     try {
       if (!REACT_APP_SERVER_URL) {
@@ -116,14 +122,18 @@ export const createUser = (newUser: Credentials, formData?: FormData) => {
         type: ActionTypes.createUser,
         payload: response.data.created,
       });
+
+      successCallback();
     } catch (error) {
       console.error(error);
+      errorCallback();
     }
   };
 };
 
 export const loginUser = (
   userCredentials: Credentials,
+  errorCallback: Function,
   successCallback: Function
 ) => {
   return async (dispatch: Dispatch<LoginUserAction>) => {
@@ -148,7 +158,7 @@ export const loginUser = (
       successCallback();
     } catch (error) {
       console.error(error);
-      successCallback();
+      errorCallback();
     }
   };
 };

@@ -67,6 +67,7 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
       name: values.name,
       imageUrl: values.imageUrl,
       lastUpdated: new Date(),
+      lastMessage: "",
     };
 
     props.addChatPartial(newChat);

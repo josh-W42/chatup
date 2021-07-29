@@ -60,12 +60,17 @@ const _LoginCard = (props: LoginCardProps): JSX.Element => {
       passWord: values.password,
     };
 
-    props.loginUser(userCredentials, onLoginSuccess);
+    props.loginUser(userCredentials, onLoginFailure, onLoginSuccess);
     redirect();
   };
 
   const onLoginSuccess = (): void => {
+    // trigger a success notification
     props.authorizeUser();
+  };
+
+  const onLoginFailure = (): void => {
+    // trigger a fail notification
   };
 
   const redirect = () => {

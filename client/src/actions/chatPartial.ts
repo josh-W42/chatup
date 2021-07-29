@@ -9,6 +9,7 @@
 export interface ChatPartial {
   id: number;
   name: string;
-  lastUpdated: Date;
   imageUrl: string;
+  lastUpdated: Date;
+  lastMessage: string;
 }

@@ -12,7 +12,6 @@ interface ChatListProps {
 
 const _ChatList = (props: ChatListProps): JSX.Element => {
   const renderChats = (): JSX.Element[] => {
-    console.log(props);
     return props.user.chats.map((chat: ChatPartial) => {
       return (
         <Link

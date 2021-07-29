@@ -2,7 +2,7 @@ import { Chat, User } from "../actions";
 
 export const AnonymousUser: User = {
   id: -1,
-  userName: "Anonymous",
+  userName: "",
   passWord: "",
   chats: [],
   imageUrl: "broken",
@@ -17,7 +17,3 @@ export const emptyChat: Chat = {
   messages: [],
   members: [],
 };
-
-export interface errorCallback extends Function {
-  (): void;
-}
