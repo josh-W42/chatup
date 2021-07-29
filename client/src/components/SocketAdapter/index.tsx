@@ -28,15 +28,15 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("connection established");
+      // console.log("connection established");
     });
 
     socket.on("disconnect", () => {
-      console.log("connection terminated");
+      // console.log("connection terminated");
     });
 
     socket.on("message", (data) => {
-      console.log(data);
+      // console.log(data);
     });
 
     socket.on("update messages", (data: NewContentPayload) => {

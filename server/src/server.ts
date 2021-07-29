@@ -46,7 +46,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`connected: $${socket.id}`);
+  // console.log(`connected: $${socket.id}`);
 
   socket.on("leave room", (data: JoinLeavePayload) => {
     const id: string = data.id;
@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(`disconnect: ${socket.id}`);
+    // console.log(`disconnect: ${socket.id}`);
   });
 });
 
