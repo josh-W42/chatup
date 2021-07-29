@@ -10,11 +10,13 @@ import {
   Typography,
   Tooltip,
 } from "@material-ui/core";
-import { PersonAdd, Settings, Logout } from "@material-ui/icons";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
+import { Logout } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { StoreState } from "../../reducers";
 import { User, unAuthorizeUser } from "../../actions";
 import setAuthToken from "../../util/setAuthToken";
+import { Link } from "react-router-dom";
 
 interface MenuProps {
   unAuthorizeUser: typeof unAuthorizeUser;
@@ -41,9 +43,13 @@ const _MenuButton = (props: MenuProps): JSX.Element => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Tooltip title="Account settings">
+        <Tooltip title="Account Menu">
           <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar
+              src={props.user.imageUrl}
+              alt={props.user.userName}
+              sx={{ width: 32, height: 32 }}
+            ></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -82,23 +88,15 @@ const _MenuButton = (props: MenuProps): JSX.Element => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
+          <Link
+            to="/chats"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            <ListItemIcon>
+              <ControlPointIcon fontSize="small" />
+            </ListItemIcon>
+            Add More Chats
+          </Link>
         </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>

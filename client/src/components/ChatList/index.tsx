@@ -31,7 +31,11 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
               <Typography variant="h6" component="span">
                 {chat.name}
               </Typography>
-              <Typography variant="caption" component="span">
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                component="span"
+              >
                 {timeSinceDate(chat.lastUpdated)}
               </Typography>
               <Typography variant="caption" component="span">

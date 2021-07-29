@@ -34,3 +34,24 @@ export const postChatPartial = async (
     errorCallBack();
   }
 };
+
+export const fetchChatPartials = async (
+  errorCallback: () => void,
+  successCallBack: (chats: ChatPartial[]) => void
+) => {
+  try {
+    if (!REACT_APP_SERVER_URL) {
+      throw new Error("NO SERVER URL FOUND");
+    }
+
+    const response = await axios.get<
+      null,
+      AxiosResponse<{ chats: ChatPartial[] }>
+    >(`${REACT_APP_SERVER_URL}chats/all`);
+
+    successCallBack(response.data.chats);
+  } catch (error) {
+    console.error(error);
+    errorCallback();
+  }
+};

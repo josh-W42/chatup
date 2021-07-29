@@ -22,6 +22,7 @@ import MessageList from "../MessageList";
 import BottomActionBar from "../BottomActionBar";
 import { useEffect } from "react";
 import MenuButton from "../MenuButton";
+import ChatSearchCard from "../ChatSearchCard";
 
 interface DrawerProps {
   newChatOpen: boolean;
@@ -101,6 +102,9 @@ const _ChatDrawer = (props: DrawerProps): JSX.Element => {
       <Box component="main" sx={{ width: "100%" }}>
         <DrawerHeader />
         <Switch>
+          <Route exact path="/chats">
+            <ChatSearchCard />
+          </Route>
           <Route path="/chats/:id">
             <MessageList />
             <BottomActionBar chatUpdated={setChatUpdated} isDrawerOpen={open} />

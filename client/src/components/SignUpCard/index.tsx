@@ -85,8 +85,19 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     });
   };
 
+  const isformValid = () => {
+    if (values.passWord !== values.confirmPassword) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!isformValid) {
+      return;
+    }
 
     const newUser: Credentials = {
       userName: values.userName,
