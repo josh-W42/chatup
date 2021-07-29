@@ -62,7 +62,7 @@ const getChat = async (req: Request, res: Response) => {
 
     const chat: Chat = chatSnapShot.val();
 
-    // now get all messages
+    // get all messages
     const messages = await getAllMessages(chat.id);
 
     res.json({

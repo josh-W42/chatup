@@ -59,7 +59,6 @@ const _BottomActionBar = (props: ActionBarProps) => {
         authorId: props.user.id,
         authorImageUrl: props.user.imageUrl,
         sentGraphic: values.sentGraphic,
-        graphicUrls: values.graphicUrls,
       };
       postMessage(newMessage, onPostError, onPostSuccess);
       reset();

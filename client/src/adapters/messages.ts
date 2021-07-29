@@ -10,7 +10,6 @@ export interface MessagePayload {
   authorId: string;
   authorImageUrl: string;
   sentGraphic: boolean;
-  graphicUrls: string[];
 }
 
 export const postMessage = async (

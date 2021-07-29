@@ -11,3 +11,4 @@ exports.router = router;
 router.use("/auth", routes_1.default.auth);
 router.use("/users", routes_1.default.user);
 router.use("/chats", routes_1.default.chat);
+router.use("/messages", routes_1.default.message);
