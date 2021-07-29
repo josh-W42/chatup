@@ -53,8 +53,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var models_1 = require("../models");
 var uuid_1 = require("uuid");
 var helper_1 = require("../util/helper");
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var bcrypt_1 = __importDefault(require("bcrypt"));
+var jsonwebtoken_1 = require("jsonwebtoken");
+var bcrypt_1 = require("bcrypt");
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 var JWT_SECRET = process.env.JWT_SECRET;
@@ -100,7 +100,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     return [2 /*return*/, helper_1.handleError(new Error("No User Found"), 400, res)];
                 }
                 user_1 = dbSnapshot.val();
-                return [4 /*yield*/, bcrypt_1.default.compare(passWord, user_1.passWord)];
+                return [4 /*yield*/, bcrypt_1.compare(passWord, user_1.passWord)];
             case 3:
                 isValid = _b.sent();
                 if (!isValid) {
@@ -110,7 +110,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                     id: user_1.id,
                     userName: user_1.userName,
                 };
-                jsonwebtoken_1.default.sign(payload, JWT_SECRET, { expiresIn: 7200 }, function (error, token) { return __awaiter(void 0, void 0, void 0, function () {
+                jsonwebtoken_1.sign(payload, JWT_SECRET, { expiresIn: 7200 }, function (error, token) { return __awaiter(void 0, void 0, void 0, function () {
                     var verified, chats;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -119,7 +119,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                                     return [2 /*return*/, helper_1.handleError(error, 500, res)];
                                 if (!token)
                                     return [2 /*return*/, helper_1.handleError(new Error("No Token Found"), 500, res)];
-                                verified = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+                                verified = jsonwebtoken_1.verify(token, JWT_SECRET);
                                 return [4 /*yield*/, helper_1.getAllChats(user_1.userName)];
                             case 1:
                                 chats = _a.sent();
@@ -168,10 +168,10 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     createdAt: new Date().getTime(),
                 };
                 // Salt and Hash passWord
-                bcrypt_1.default.genSalt(12, function (error, salt) {
+                bcrypt_1.genSalt(12, function (error, salt) {
                     if (error)
                         return helper_1.handleError(error, 500, res);
-                    bcrypt_1.default.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
+                    bcrypt_1.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
                         var _a, _b;
                         return __generator(this, function (_c) {
                             switch (_c.label) {

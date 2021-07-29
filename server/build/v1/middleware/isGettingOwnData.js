@@ -8,7 +8,7 @@ var isGettingOwnData = function (req, res, next) {
         return;
     }
     res.status(403).json({
-        message: "Must Be Logged In As That User To Do That"
+        message: "Must Be Logged In As That User To Do That",
     });
 };
 exports.default = isGettingOwnData;

@@ -1,3 +1,4 @@
 import auth from "./auth";
 import user from "./user";
-export { auth, user };
+import chat from "./chat";
+export { auth, user, chat };

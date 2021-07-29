@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { db, Payload, RequestWithBody, User, uuid } from "../models";
 import { v4 as uuidv4 } from "uuid";
 import { getAllChats, handleError } from "../util/helper";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import { sign, verify } from "jsonwebtoken";
+import { compare, genSalt, hash } from "bcrypt";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -54,7 +54,7 @@ const login = async (req: RequestWithBody, res: Response) => {
     const user: User = dbSnapshot.val();
 
     // compare passwords
-    const isValid = await bcrypt.compare(passWord, user.passWord);
+    const isValid = await compare(passWord, user.passWord);
 
     if (!isValid) {
       return handleError(new Error("Invalid Password"), 400, res);
@@ -66,11 +66,11 @@ const login = async (req: RequestWithBody, res: Response) => {
       userName: user.userName,
     };
 
-    jwt.sign(payload, JWT_SECRET, { expiresIn: 7200 }, async (error, token) => {
+    sign(payload, JWT_SECRET, { expiresIn: 7200 }, async (error, token) => {
       if (error) return handleError(error, 500, res);
       if (!token) return handleError(new Error("No Token Found"), 500, res);
 
-      const verified = jwt.verify(token, JWT_SECRET);
+      const verified = verify(token, JWT_SECRET);
 
       const chats = await getAllChats(user.userName);
 
@@ -113,10 +113,10 @@ const signUp = async (req: RequestWithBody, res: Response) => {
     };
 
     // Salt and Hash passWord
-    bcrypt.genSalt(12, (error, salt) => {
+    genSalt(12, (error, salt) => {
       if (error) return handleError(error, 500, res);
 
-      bcrypt.hash(newUser.passWord, salt, async (error, hash) => {
+      hash(newUser.passWord, salt, async (error, hash) => {
         if (error) return handleError(error, 500, res);
 
         newUser.passWord = hash;
