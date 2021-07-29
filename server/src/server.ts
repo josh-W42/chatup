@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { router as v1Router } from "./v1";
 import passport from "passport";
 import passportConfig from "./v1/config/passport";
+import { Server } from "socket.io";
 
 passportConfig(passport);
 dotenv.config();
@@ -33,6 +34,22 @@ app.get("*", (req: Request, res: Response) => {
   });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log("Listening on PORT: ", PORT);
 });
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(socket.id);
+
+  socket.on("disconnect", () => {
+    console.log(`disconnect: ${socket.id}`);
+  });
+});
+
+io.emit("message", new Date().toTimeString());

@@ -10,6 +10,7 @@ var morgan_1 = __importDefault(require("morgan"));
 var v1_1 = require("./v1");
 var passport_1 = __importDefault(require("passport"));
 var passport_2 = __importDefault(require("./v1/config/passport"));
+var socket_io_1 = require("socket.io");
 passport_2.default(passport_1.default);
 dotenv_1.default.config();
 var app = express_1.default();
@@ -31,6 +32,18 @@ app.get("*", function (req, res) {
         message: "Not Found",
     });
 });
-app.listen(PORT, function () {
+var server = app.listen(PORT, function () {
     console.log("Listening on PORT: ", PORT);
 });
+var io = new socket_io_1.Server(server, {
+    cors: {
+        origin: "*",
+    },
+});
+io.on("connection", function (socket) {
+    console.log(socket.id);
+    socket.on("disconnect", function () {
+        console.log("disconnect: " + socket.id);
+    });
+});
+io.emit("message", new Date().toTimeString());
