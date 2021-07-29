@@ -6,9 +6,6 @@ const { REACT_APP_SERVER_URL } = process.env;
 export interface MessagePayload {
   chatId: string;
   content: string;
-  author: string;
-  authorId: string;
-  authorImageUrl: string;
   sentGraphic: boolean;
 }
 

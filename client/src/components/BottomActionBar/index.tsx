@@ -55,9 +55,6 @@ const _BottomActionBar = (props: ActionBarProps) => {
       const newMessage: MessagePayload = {
         chatId: props.chat.id,
         content: values.content,
-        author: props.user.userName,
-        authorId: props.user.id,
-        authorImageUrl: props.user.imageUrl,
         sentGraphic: values.sentGraphic,
       };
       postMessage(newMessage, onPostError, onPostSuccess);
