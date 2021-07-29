@@ -17,10 +17,10 @@ admin.initializeApp({
 export const db = admin.database();
 
 // let data: DataBase = {
-//   chats: new Map<uuid, Chat>(),
+//   chats: new Map<string, Chat>(),
 //   users: new Map<string, User>(),
-//   messages: new Map<uuid, Map<uuid, Message>>(),
-//   members: new Map<uuid, Map<string, string>>(),
+//   messages: new Map<string, Map<string, Message>>(),
+//   members: new Map<string, Map<string, string>>(),
 // };
 
 export * from "./modelTypes";

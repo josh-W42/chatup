@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { db, Payload, RequestWithBody, User, uuid } from "../models";
+import { db, Payload, RequestWithBody, User } from "../models";
 import { v4 as uuidv4 } from "uuid";
 import { getAllChats, handleError } from "../util/helper";
 import { sign, verify } from "jsonwebtoken";
@@ -105,7 +105,7 @@ const signUp = async (req: RequestWithBody, res: Response) => {
 
     // if not, create new entry
     const newUser: User = {
-      id: uuidv4() as uuid,
+      id: uuidv4(),
       userName,
       passWord,
       imageUrl: "",

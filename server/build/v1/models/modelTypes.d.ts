@@ -1,27 +1,26 @@
-export declare type uuid = string;
 export interface DataBase {
-    chats: Map<uuid, Chat>;
+    chats: Map<string, Chat>;
     users: Map<string, User>;
-    messages: Map<uuid, Map<uuid, Message>>;
-    chatsToMembers: Map<uuid, Map<string, string>>;
-    membersToChats: Map<string, Map<uuid, boolean>>;
+    messages: Map<string, Map<string, Message>>;
+    chatsToMembers: Map<string, Map<string, string>>;
+    membersToChats: Map<string, Map<string, boolean>>;
 }
 export interface Chat {
-    id: uuid;
+    id: string;
     name: string;
     imageUrl: string;
     lastUpdated: number;
     lastMessage: string;
 }
 export interface User {
-    id: uuid;
+    id: string;
     userName: string;
     passWord: string;
     imageUrl: string;
     createdAt: number;
 }
 export interface Message {
-    id: uuid;
+    id: string;
     author: string;
     content: string;
     authorImageUrl: string;
