@@ -14,6 +14,6 @@ export const emptyChat: Chat = {
   name: "",
   imageUrl: "broken",
   lastUpdated: new Date().getTime(),
+  lastMessage: "",
   messages: [],
-  members: [],
 };

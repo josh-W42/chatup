@@ -112,7 +112,9 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   };
 
   const onSignUpSuccess = (): void => {
-    props.authorizeUser();
+    // trigger notification with success message
+    // if the user is logged in then run
+    // props.authorizeUser();
   };
 
   if (values.redirect) {

@@ -10,8 +10,8 @@ export interface Chat {
   name: string;
   imageUrl: string;
   lastUpdated: number;
+  lastMessage: string;
   messages: Message[];
-  members: number[];
 }
 
 export interface AddMessageActon {
