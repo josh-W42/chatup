@@ -33,34 +33,10 @@ export interface DeleteUserAction {
   payload: number;
 }
 
-export interface AddChatPartialAction {
-  type: ActionTypes.addChatPartial;
-  payload: ChatPartial;
-}
-
-export interface DeleteChatPartialAction {
-  type: ActionTypes.deleteChatPartial;
-  payload: number;
-}
-
 export interface FetchUserAction {
   type: ActionTypes.fetchUser;
   payload: User;
 }
-
-export const addChatPartial = (newChat: ChatPartial): AddChatPartialAction => {
-  return {
-    type: ActionTypes.addChatPartial,
-    payload: newChat,
-  };
-};
-
-export const deleteChatPartial = (id: number): DeleteChatPartialAction => {
-  return {
-    type: ActionTypes.deleteChatPartial,
-    payload: id,
-  };
-};
 
 export const fetchUser = (userInfo: AuthPayload, errorCallback: Function) => {
   return async (dispatch: Dispatch<FetchUserAction>) => {
