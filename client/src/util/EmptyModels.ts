@@ -6,14 +6,14 @@ export const AnonymousUser: User = {
   passWord: "",
   chats: [],
   imageUrl: "broken",
-  createdAt: new Date(),
+  createdAt: new Date().getTime(),
 };
 
 export const emptyChat: Chat = {
   id: -1,
   name: "",
   imageUrl: "broken",
-  lastUpdated: new Date(),
+  lastUpdated: new Date().getTime(),
   messages: [],
   members: [],
 };

@@ -10,7 +10,7 @@ export interface User {
   passWord: string;
   chats: ChatPartial[];
   imageUrl: string;
-  createdAt: Date;
+  createdAt: number;
 }
 
 export interface Credentials {

@@ -36,7 +36,7 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
                 {chat.name}
               </Typography>
               <Typography variant="caption" component="span">
-                {timeSinceDate(chat.lastUpdated)}
+                {timeSinceDate(new Date(chat.lastUpdated))}
               </Typography>
             </Grid>
           </ListItem>

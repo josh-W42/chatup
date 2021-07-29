@@ -59,7 +59,7 @@ const _BottomActionBar = (props: ActionBarProps) => {
         authorImageUrl: props.user.imageUrl,
         sentGraphic: values.sentGraphic,
         graphicUrls: values.graphicUrls,
-        createdAt: new Date(),
+        createdAt: new Date().getTime(),
       };
 
       props.addMessage(newMessage, props.chat.id);

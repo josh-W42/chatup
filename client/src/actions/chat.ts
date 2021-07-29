@@ -5,7 +5,7 @@ export interface Chat {
   id: number;
   name: string;
   imageUrl: string;
-  lastUpdated: Date;
+  lastUpdated: number;
   messages: Message[];
   members: number[];
 }
@@ -50,7 +50,7 @@ export const fetchChat = (id: number): FetchChatAction => {
     id: id,
     name: "placeholder",
     imageUrl: "broken",
-    lastUpdated: new Date(),
+    lastUpdated: new Date().getTime(),
     messages: [],
     members: [],
   };

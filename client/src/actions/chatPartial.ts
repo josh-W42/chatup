@@ -12,7 +12,7 @@ export interface ChatPartial {
   id: number;
   name: string;
   imageUrl: string;
-  lastUpdated: Date;
+  lastUpdated: number;
   lastMessage: string;
 }
 

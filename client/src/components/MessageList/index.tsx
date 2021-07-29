@@ -49,7 +49,7 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
     let output: JSX.Element[] = [];
 
     props.chat.messages.forEach((message: Message) => {
-      addTimeElement(lastDate, lastHour, message.createdAt, output);
+      addTimeElement(lastDate, lastHour, new Date(message.createdAt), output);
       output.push(
         <ListItem
           key={message.id}
@@ -68,7 +68,7 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
             <Tooltip
               arrow
               placement={message.authorId === 1 ? "left" : "right"}
-              title={message.createdAt.toLocaleTimeString()}
+              title={new Date(message.createdAt).toLocaleTimeString()}
             >
               <Card
                 sx={{ maxWidth: 250, marginX: 1, wordWrap: "break-word" }}
