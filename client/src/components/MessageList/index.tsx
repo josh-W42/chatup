@@ -54,7 +54,7 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
   };
 
   const onFetchSuccess = (id: string) => {
-    props.joinChat(id);
+    // props.joinChat(id);
   };
 
   const renderMessages = (): JSX.Element[] => {

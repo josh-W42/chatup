@@ -69,7 +69,7 @@ const _BottomActionBar = (props: ActionBarProps) => {
 
   const onPostSuccess = (newMessage: Message) => {
     props.addMessage(newMessage, props.chat.id);
-    emitSocketEvent("new message", { ...newMessage, chatId: props.chat.id });
+    // emitSocketEvent("new message", { ...newMessage, chatId: props.chat.id });
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

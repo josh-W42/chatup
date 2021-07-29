@@ -27,21 +27,21 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
   const [oldChat, setOldChat] = useState("");
 
   useEffect(() => {
-    socket.on("connect", () => {
-      // console.log("connection established");
-    });
+    // socket.on("connect", () => {
+    //   // console.log("connection established");
+    // });
 
-    socket.on("disconnect", () => {
-      // console.log("connection terminated");
-    });
+    // socket.on("disconnect", () => {
+    //   // console.log("connection terminated");
+    // });
 
-    socket.on("message", (data) => {
-      // console.log(data);
-    });
+    // socket.on("message", (data) => {
+    //   // console.log(data);
+    // });
 
-    socket.on("update messages", (data: NewContentPayload) => {
-      props.chat.messages.push(data.message);
-    });
+    // socket.on("update messages", (data: NewContentPayload) => {
+    //   props.chat.messages.push(data.message);
+    // });
 
     return () => {
       socket.off("connect");
@@ -49,12 +49,12 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
     };
   }, []);
 
-  useEffect(() => {
-    socket.emit("leave room", { id: oldChat });
-    socket.emit("join room", { id: props.activeChat });
+  // useEffect(() => {
+  //   socket.emit("leave room", { id: oldChat });
+  //   socket.emit("join room", { id: props.activeChat });
 
-    setOldChat(props.activeChat);
-  }, [props.activeChat]);
+  //   setOldChat(props.activeChat);
+  // }, [props.activeChat]);
 
   useEffect(() => {
     if (props.isAuth && socket.disconnected) {
