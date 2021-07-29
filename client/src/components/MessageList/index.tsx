@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Chat, fetchChat, Message, User } from "../../actions";
+import { Chat, fetchChat, Message, User, joinChat } from "../../actions";
 import { addTimeElement } from "../../util/time";
 import { Redirect, useRouteMatch } from "react-router-dom";
 import {
@@ -24,6 +24,7 @@ interface MessageListProps {
   fetchChat: Function;
   chat: Chat;
   user: User;
+  joinChat: typeof joinChat;
 }
 
 const _MessageList = (props: MessageListProps): JSX.Element => {
@@ -33,7 +34,7 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
 
   useEffect(() => {
     if (params.id && params.id !== props.chat.id) {
-      props.fetchChat(params.id, onFetchError);
+      props.fetchChat(params.id, onFetchError, onFetchSuccess);
     }
   }, [params.id]);
 
@@ -50,6 +51,10 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
   const onFetchError = () => {
     // Trigger redirect and trigger warning notification
     setRedirect(true);
+  };
+
+  const onFetchSuccess = (id: string) => {
+    props.joinChat(id);
   };
 
   const renderMessages = (): JSX.Element[] => {
@@ -119,6 +124,7 @@ const mapStateToProps = ({
 
 const MessageList = connect(mapStateToProps, {
   fetchChat,
+  joinChat,
 })(_MessageList);
 
 export default MessageList;

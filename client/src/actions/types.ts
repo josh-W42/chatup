@@ -12,6 +12,7 @@ import {
   AuthorizeUserAction,
   UnAuthorizeUserAction,
   FetchUserAction,
+  JoinChatAction,
 } from "./index";
 
 export enum ActionTypes {
@@ -28,6 +29,7 @@ export enum ActionTypes {
   authorizeUser,
   unAuthorizeUser,
   fetchUser,
+  joinChat,
 }
 
 export type Action =
@@ -43,4 +45,5 @@ export type Action =
   | LoginUserAction
   | AuthorizeUserAction
   | UnAuthorizeUserAction
-  | FetchUserAction;
+  | FetchUserAction
+  | JoinChatAction;

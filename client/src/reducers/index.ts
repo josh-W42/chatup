@@ -3,6 +3,7 @@ import { Chat, User } from "../actions";
 import { authReducer } from "./auth";
 import { chatReducer } from "./chat";
 import { newChatDialogReducer } from "./chatPartial";
+import { chatListenerReducer } from "./socket";
 import { userReducer } from "./user";
 
 export interface StoreState {
@@ -10,6 +11,7 @@ export interface StoreState {
   chat: Chat;
   user: User;
   isAuth: boolean;
+  activeChat: string;
 }
 
 export const reducers = combineReducers<StoreState>({
@@ -17,4 +19,5 @@ export const reducers = combineReducers<StoreState>({
   chat: chatReducer,
   user: userReducer,
   isAuth: authReducer,
+  activeChat: chatListenerReducer,
 });

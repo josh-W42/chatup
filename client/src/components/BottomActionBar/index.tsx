@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import { Chat, Message, addMessage, User } from "../../actions";
 import { MessagePayload, postMessage } from "../../adapters";
 import { StoreState } from "../../reducers";
+import { emitSocketEvent } from "../SocketAdapter";
 import { calculateWidth } from "./styles";
 
 interface ActionBarState {
@@ -68,6 +69,7 @@ const _BottomActionBar = (props: ActionBarProps) => {
 
   const onPostSuccess = (newMessage: Message) => {
     props.addMessage(newMessage, props.chat.id);
+    emitSocketEvent("new message", newMessage);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

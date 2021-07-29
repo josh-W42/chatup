@@ -6,6 +6,7 @@ import { router as v1Router } from "./v1";
 import passport from "passport";
 import passportConfig from "./v1/config/passport";
 import { Server } from "socket.io";
+import { JoinLeavePayload, NewContentPayload } from "./v1/models";
 
 passportConfig(passport);
 dotenv.config();
@@ -45,7 +46,21 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  console.log(`connected: $${socket.id}`);
+
+  socket.on("leave room", (data: JoinLeavePayload) => {
+    const id: string = data.id;
+    socket.leave(id);
+  });
+
+  socket.on("join room", (data: JoinLeavePayload) => {
+    const id: string = data.id;
+    socket.join(id);
+  });
+
+  socket.on("new message", (data: NewContentPayload) => {
+    io.to(data.chatId).emit("new message", data);
+  });
 
   socket.on("disconnect", () => {
     console.log(`disconnect: ${socket.id}`);

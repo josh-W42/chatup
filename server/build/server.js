@@ -41,7 +41,18 @@ var io = new socket_io_1.Server(server, {
     },
 });
 io.on("connection", function (socket) {
-    console.log(socket.id);
+    console.log("connected: $" + socket.id);
+    socket.on("leave room", function (data) {
+        var id = data.id;
+        socket.leave(id);
+    });
+    socket.on("join room", function (data) {
+        var id = data.id;
+        socket.join(id);
+    });
+    socket.on("new message", function (data) {
+        io.to(data.chatId).emit("new message", data);
+    });
     socket.on("disconnect", function () {
         console.log("disconnect: " + socket.id);
     });

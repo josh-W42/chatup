@@ -19,7 +19,11 @@ export interface FetchChatAction {
   payload: Chat;
 }
 
-export const fetchChat = (id: number, errorCallback: () => void) => {
+export const fetchChat = (
+  id: number,
+  errorCallback: () => void,
+  successCallback: (id: string) => void
+) => {
   return async (dispatch: Dispatch<FetchChatAction>) => {
     try {
       if (!REACT_APP_SERVER_URL) {
@@ -34,6 +38,8 @@ export const fetchChat = (id: number, errorCallback: () => void) => {
         type: ActionTypes.fetchChat,
         payload: response.data.chat,
       });
+
+      successCallback(response.data.chat.id);
     } catch (error) {
       console.error(error);
       errorCallback();

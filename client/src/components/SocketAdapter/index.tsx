@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import io from "socket.io-client";
+import { Chat, Message, NewContentPayload } from "../../actions";
 import { StoreState } from "../../reducers";
 
 const { REACT_APP_SOCKET_URL } = process.env;
-console.log(REACT_APP_SOCKET_URL);
+
 const socket = io(REACT_APP_SOCKET_URL as string, {
   reconnectionAttempts: 10,
   reconnectionDelay: 10000,
@@ -13,9 +15,17 @@ const socket = io(REACT_APP_SOCKET_URL as string, {
 
 interface SocketAdapterProps {
   isAuth: boolean;
+  activeChat: string;
+  chat: Chat;
 }
 
+export const emitSocketEvent = (event: string, data: any) => {
+  socket.emit(event, data);
+};
+
 const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
+  const [oldChat, setOldChat] = useState("");
+
   useEffect(() => {
     socket.on("connect", () => {
       console.log("connection established");
@@ -29,17 +39,31 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
       console.log(data);
     });
 
+    socket.on("new message", (data: NewContentPayload) => {
+      if (props.chat.id === data.chatId) {
+        props.chat.messages.push(data.message);
+      }
+    });
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("message");
+      socket.off("new message");
     };
   }, []);
 
   useEffect(() => {
-    if (props.isAuth) {
+    socket.emit("leave room", { id: oldChat });
+    socket.emit("join room", { id: props.activeChat });
+
+    setOldChat(props.activeChat);
+  }, [props.activeChat]);
+
+  useEffect(() => {
+    if (props.isAuth && socket.disconnected) {
       socket.connect();
-    } else {
+    } else if (socket.connected) {
       socket.disconnect();
     }
   }, [props.isAuth]);
@@ -47,8 +71,12 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
   return <></>;
 };
 
-const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
-  return { isAuth };
+const mapStateToProps = ({
+  isAuth,
+  activeChat,
+  chat,
+}: StoreState): { isAuth: boolean; activeChat: string; chat: Chat } => {
+  return { isAuth, activeChat, chat };
 };
 
 const SocketAdapter = connect(mapStateToProps)(_SocketAdapter);
