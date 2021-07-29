@@ -51,6 +51,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var models_1 = require("../models");
+var uuid_1 = require("uuid");
 var helper_1 = require("../util/helper");
 var jsonwebtoken_1 = require("jsonwebtoken");
 var bcrypt_1 = require("bcrypt");
@@ -160,7 +161,7 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     return [2 /*return*/, helper_1.handleError(new Error("Username Already Exists"), 400, res)];
                 }
                 newUser_1 = {
-                    id: "",
+                    id: uuid_1.v4(),
                     userName: userName,
                     passWord: passWord,
                     imageUrl: "",
@@ -171,28 +172,23 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     if (error)
                         return helper_1.handleError(error, 500, res);
                     bcrypt_1.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
-                        var newUserRef;
-                        var _a;
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
-                                case 0:
-                                    if (error)
-                                        return [2 /*return*/, helper_1.handleError(error, 500, res)];
-                                    newUser_1.passWord = hash;
-                                    return [4 /*yield*/, userRef.push()];
-                                case 1:
-                                    newUserRef = _b.sent();
-                                    newUser_1.id = newUserRef.key;
-                                    newUserRef.set(newUser_1);
-                                    // initialize a member to chat resource
-                                    models_1.db.ref("/membersToChats").update((_a = {},
-                                        _a["" + newUser_1.userName] = "no chats",
-                                        _a));
-                                    res.status(201).json({
-                                        created: __assign(__assign({}, newUser_1), { passWord: "", chats: [] }),
-                                    });
-                                    return [2 /*return*/];
-                            }
+                        var _a, _b;
+                        return __generator(this, function (_c) {
+                            if (error)
+                                return [2 /*return*/, helper_1.handleError(error, 500, res)];
+                            newUser_1.passWord = hash;
+                            // Save the user
+                            userRef.update((_a = {},
+                                _a["" + newUser_1.userName] = newUser_1,
+                                _a));
+                            // initialize a member to chat resource
+                            models_1.db.ref("/membersToChats").update((_b = {},
+                                _b["" + newUser_1.userName] = "no chats",
+                                _b));
+                            res.status(201).json({
+                                created: __assign(__assign({}, newUser_1), { passWord: "", chats: [] }),
+                            });
+                            return [2 /*return*/];
                         });
                     }); });
                 });

@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,18 +51,18 @@ var models_1 = require("../models");
 var helper_1 = require("../util/helper");
 var createChat = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var name, user, newChat, newChatRef, error_1;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 name = req.body.name;
                 if (!name) {
                     return [2 /*return*/, helper_1.handleError(new Error("Invalid Chat Name"), 400, res)];
                 }
                 user = req.user;
-                _c.label = 1;
+                _d.label = 1;
             case 1:
-                _c.trys.push([1, 3, , 4]);
+                _d.trys.push([1, 3, , 4]);
                 newChat = {
                     id: "",
                     name: name,
@@ -61,7 +72,7 @@ var createChat = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 };
                 return [4 /*yield*/, models_1.db.ref("/chats").push()];
             case 2:
-                newChatRef = _c.sent();
+                newChatRef = _d.sent();
                 newChat.id = newChatRef.key;
                 newChatRef.set(newChat);
                 res.status(201).json({ chat: newChat });
@@ -75,13 +86,47 @@ var createChat = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 models_1.db.ref("/chatsToMembers").update((_b = {},
                     _b["" + newChat.id] = user,
                     _b));
+                // initialize the messages data
+                models_1.db.ref("/messages").update((_c = {},
+                    _c["" + newChat.id] = "no Messages",
+                    _c));
                 return [3 /*break*/, 4];
             case 3:
-                error_1 = _c.sent();
+                error_1 = _d.sent();
                 helper_1.handleError(error_1, 500, res);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.default = { createChat: createChat };
+var getChat = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, chatSnapShot, chat, messages, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                id = req.params.id;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, models_1.db.ref("/chats/" + id).once("value")];
+            case 2:
+                chatSnapShot = _b.sent();
+                if (!chatSnapShot.exists()) {
+                    return [2 /*return*/, helper_1.handleError(new Error("Chat Does Not Exist"), 400, res)];
+                }
+                chat = chatSnapShot.val();
+                return [4 /*yield*/, helper_1.getAllMessages(chat.id)];
+            case 3:
+                messages = _b.sent();
+                res.json({
+                    chat: __assign(__assign({}, chat), { messages: messages }),
+                });
+                return [3 /*break*/, 5];
+            case 4:
+                _a = _b.sent();
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = { createChat: createChat, getChat: getChat };

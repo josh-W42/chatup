@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { Chat, db } from "../models";
+import { Chat, db, Message } from "../models";
 
 export const handleError = (
   err: Error,
@@ -29,6 +29,32 @@ export const getAllChats = async (userName: string) => {
       });
 
       return chats.reverse();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return [];
+};
+
+export const getAllMessages = async (id: string) => {
+  try {
+    const messagesSnapshot = await db
+      .ref(`/messages/${id}`)
+      .orderByChild("createdAt")
+      .once("value");
+
+    if (typeof messagesSnapshot === "string") {
+      return [];
+    } else {
+      const messages: Message[] = [];
+
+      messagesSnapshot.forEach((dataSnapshot) => {
+        messages.push(dataSnapshot.val());
+      });
+
+      messages.reverse();
+
+      return messages;
     }
   } catch (error) {
     console.error(error);

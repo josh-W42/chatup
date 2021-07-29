@@ -105,7 +105,7 @@ const signUp = async (req: RequestWithBody, res: Response) => {
 
     // if not, create new entry
     const newUser: User = {
-      id: "",
+      id: uuidv4(),
       userName,
       passWord,
       imageUrl: "",
@@ -122,9 +122,9 @@ const signUp = async (req: RequestWithBody, res: Response) => {
         newUser.passWord = hash;
 
         // Save the user
-        const newUserRef = await userRef.push();
-        newUser.id = newUserRef.key as string;
-        newUserRef.set(newUser);
+        userRef.update({
+          [`${newUser.userName}`]: newUser,
+        });
 
         // initialize a member to chat resource
         db.ref("/membersToChats").update({

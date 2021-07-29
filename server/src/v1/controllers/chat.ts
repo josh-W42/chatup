@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Chat, db, RequestWithBody, User } from "../models";
 import { v4 as uuidv4 } from "uuid";
-import { handleError } from "../util/helper";
+import { getAllMessages, handleError } from "../util/helper";
 
 const createChat = async (req: RequestWithBody, res: Response) => {
   const { name } = req.body;
@@ -40,9 +40,35 @@ const createChat = async (req: RequestWithBody, res: Response) => {
     db.ref("/chatsToMembers").update({
       [`${newChat.id}`]: user,
     });
+
+    // initialize the messages data
+    db.ref("/messages").update({
+      [`${newChat.id}`]: "no Messages",
+    });
   } catch (error) {
     handleError(error, 500, res);
   }
 };
 
-export default { createChat };
+const getChat = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    // check if the chat exists
+    const chatSnapShot = await db.ref(`/chats/${id}`).once("value");
+    if (!chatSnapShot.exists()) {
+      return handleError(new Error("Chat Does Not Exist"), 400, res);
+    }
+
+    const chat: Chat = chatSnapShot.val();
+
+    // now get all messages
+    const messages = await getAllMessages(chat.id);
+
+    res.json({
+      chat: { ...chat, messages },
+    });
+  } catch {}
+};
+
+export default { createChat, getChat };

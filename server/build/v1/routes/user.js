@@ -8,6 +8,6 @@ var controllers_1 = require("../controllers");
 var passport_1 = require("passport");
 var isGettingOwnData_1 = __importDefault(require("../middleware/isGettingOwnData"));
 var router = express_1.Router();
-router.get("/test", controllers_1.user.test);
+// router.get("/test", user.test);
 router.get("/:userName", passport_1.authenticate("jwt", { session: false }), isGettingOwnData_1.default, controllers_1.user.getUser);
 exports.default = router;

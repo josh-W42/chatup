@@ -5,7 +5,7 @@ import isGettingOwnData from "../middleware/isGettingOwnData";
 
 const router = Router();
 
-router.get("/test", user.test);
+// router.get("/test", user.test);
 
 router.get(
   "/:userName",

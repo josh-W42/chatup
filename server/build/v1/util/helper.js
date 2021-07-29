@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllChats = exports.handleError = void 0;
+exports.getAllMessages = exports.getAllChats = exports.handleError = void 0;
 var models_1 = require("../models");
 var handleError = function (err, statusCode, res) {
     console.error(err.message);
@@ -77,3 +77,36 @@ var getAllChats = function (userName) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getAllChats = getAllChats;
+var getAllMessages = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    var messagesSnapshot, messages_1, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, models_1.db
+                        .ref("/messages/" + id)
+                        .orderByChild("createdAt")
+                        .once("value")];
+            case 1:
+                messagesSnapshot = _a.sent();
+                if (typeof messagesSnapshot === "string") {
+                    return [2 /*return*/, []];
+                }
+                else {
+                    messages_1 = [];
+                    messagesSnapshot.forEach(function (dataSnapshot) {
+                        messages_1.push(dataSnapshot.val());
+                    });
+                    messages_1.reverse();
+                    return [2 /*return*/, messages_1];
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                console.error(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/, []];
+        }
+    });
+}); };
+exports.getAllMessages = getAllMessages;
