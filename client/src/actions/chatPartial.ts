@@ -9,7 +9,7 @@ import { ActionTypes } from "./index";
   like all its messages and members for example
 */
 export interface ChatPartial {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
   lastUpdated: number;
@@ -23,7 +23,7 @@ export interface AddChatPartialAction {
 
 export interface DeleteChatPartialAction {
   type: ActionTypes.deleteChatPartial;
-  payload: number;
+  payload: string;
 }
 
 export const addChatPartial = (newChat: ChatPartial): AddChatPartialAction => {
@@ -33,7 +33,7 @@ export const addChatPartial = (newChat: ChatPartial): AddChatPartialAction => {
   };
 };
 
-export const deleteChatPartial = (id: number): DeleteChatPartialAction => {
+export const deleteChatPartial = (id: string): DeleteChatPartialAction => {
   return {
     type: ActionTypes.deleteChatPartial,
     payload: id,

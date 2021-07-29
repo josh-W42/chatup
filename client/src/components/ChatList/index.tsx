@@ -17,13 +17,9 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
         <Link
           style={{ color: "inherit", textDecoration: "none" }}
           to={`/chats/${chat.id}`}
+          key={chat.id}
         >
-          <ListItem
-            button
-            key={chat.id}
-            tabIndex={-1}
-            sx={{ overflow: "revert" }}
-          >
+          <ListItem button tabIndex={-1} sx={{ overflow: "revert" }}>
             <StyledBadge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -31,7 +27,7 @@ const _ChatList = (props: ChatListProps): JSX.Element => {
             >
               <Avatar alt={chat.name} src={chat.imageUrl} />
             </StyledBadge>
-            <Grid sx={{ marginLeft: 3 }} container direction="column">
+            <Grid sx={{ marginLeft: 4 }} container direction="column">
               <Typography variant="h6" component="span">
                 {chat.name}
               </Typography>

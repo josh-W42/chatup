@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { Chat, fetchChat, Message } from "../../actions";
+import { Chat, fetchChat, Message, User } from "../../actions";
 import { addTimeElement } from "../../util/time";
-import { useRouteMatch } from "react-router-dom";
+import { Redirect, useRouteMatch } from "react-router-dom";
 import {
   Avatar,
   List,
@@ -14,22 +14,26 @@ import {
 } from "@material-ui/core";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
+import { useState } from "react";
 
 interface URLParams {
   id?: string;
 }
 
 interface MessageListProps {
-  fetchChat: typeof fetchChat;
+  fetchChat: Function;
   chat: Chat;
+  user: User;
 }
 
 const _MessageList = (props: MessageListProps): JSX.Element => {
+  const [redirect, setRedirect] = useState(false);
+
   const params: URLParams = useRouteMatch<URLParams>().params;
 
   useEffect(() => {
-    if (params.id && parseInt(params.id) !== props.chat.id) {
-      props.fetchChat(parseInt(params.id));
+    if (params.id && params.id !== props.chat.id) {
+      props.fetchChat(params.id, onFetchError);
     }
   }, [params.id]);
 
@@ -43,6 +47,11 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
     }
   }, [props.chat.messages.length]);
 
+  const onFetchError = () => {
+    // Trigger redirect and trigger warning notification
+    setRedirect(true);
+  };
+
   const renderMessages = (): JSX.Element[] => {
     let lastDate = { date: new Date(2000, 10) };
     let lastHour = { hour: lastDate.date.getHours() };
@@ -55,19 +64,22 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
           key={message.id}
           sx={{
             p: 1,
-            justifyContent: message.authorId === 1 ? "flex-end" : "flex-start",
+            justifyContent:
+              message.authorId === props.user.id ? "flex-end" : "flex-start",
           }}
         >
           <Grid
             container
-            direction={message.authorId === 1 ? "row-reverse" : "row"}
+            direction={
+              message.authorId === props.user.id ? "row-reverse" : "row"
+            }
           >
             <Tooltip title={message.author} arrow>
               <Avatar alt={message.author} src={message.authorImageUrl} />
             </Tooltip>
             <Tooltip
               arrow
-              placement={message.authorId === 1 ? "left" : "right"}
+              placement={message.authorId === props.user.id ? "left" : "right"}
               title={new Date(message.createdAt).toLocaleTimeString()}
             >
               <Card
@@ -86,6 +98,10 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
     return output;
   };
 
+  if (redirect) {
+    return <Redirect to="/chats" />;
+  }
+
   return (
     <List>
       {renderMessages()}
@@ -94,8 +110,11 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
   );
 };
 
-const mapStateToProps = ({ chat }: StoreState): { chat: Chat } => {
-  return { chat };
+const mapStateToProps = ({
+  chat,
+  user,
+}: StoreState): { chat: Chat; user: User } => {
+  return { chat, user };
 };
 
 const MessageList = connect(mapStateToProps, {

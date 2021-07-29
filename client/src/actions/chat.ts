@@ -1,8 +1,12 @@
+import axios, { AxiosResponse } from "axios";
+import { Dispatch } from "redux";
 import { Message } from "./message";
 import { ActionTypes } from "./types";
 
+const { REACT_APP_SERVER_URL } = process.env;
+
 export interface Chat {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
   lastUpdated: number;
@@ -17,7 +21,7 @@ export interface AddMessageActon {
 
 export interface DeleteMessageAction {
   type: ActionTypes.deleteMessage;
-  payload: number;
+  payload: string;
 }
 
 export interface FetchChatAction {
@@ -27,7 +31,7 @@ export interface FetchChatAction {
 
 export const addMessage = (
   newMessage: Message,
-  chatId: number
+  chatId: string
 ): AddMessageActon => {
   return {
     type: ActionTypes.addMessage,
@@ -36,8 +40,8 @@ export const addMessage = (
 };
 
 export const deleteMessage = (
-  id: number,
-  chatId: number
+  id: string,
+  chatId: string
 ): DeleteMessageAction => {
   return {
     type: ActionTypes.deleteMessage,
@@ -45,18 +49,24 @@ export const deleteMessage = (
   };
 };
 
-export const fetchChat = (id: number): FetchChatAction => {
-  const emptyChat = {
-    id: id,
-    name: "placeholder",
-    imageUrl: "broken",
-    lastUpdated: new Date().getTime(),
-    messages: [],
-    members: [],
-  };
+export const fetchChat = (id: number, errorCallback: () => void) => {
+  return async (dispatch: Dispatch<FetchChatAction>) => {
+    try {
+      if (!REACT_APP_SERVER_URL) {
+        throw new Error("No Server URL Found");
+      }
 
-  return {
-    type: ActionTypes.fetchChat,
-    payload: emptyChat,
+      const response = await axios.get<any, AxiosResponse<{ chat: Chat }>>(
+        `${REACT_APP_SERVER_URL}chats/${id}`
+      );
+
+      dispatch<FetchChatAction>({
+        type: ActionTypes.fetchChat,
+        payload: response.data.chat,
+      });
+    } catch (error) {
+      console.error(error);
+      errorCallback();
+    }
   };
 };

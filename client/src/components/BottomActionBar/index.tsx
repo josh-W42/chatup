@@ -52,7 +52,7 @@ const _BottomActionBar = (props: ActionBarProps) => {
   const sendMessage = () => {
     if (values.sentGraphic || values.content !== "") {
       const newMessage: Message = {
-        id: Math.floor(Math.random() * 100),
+        id: "234923948329",
         content: values.content,
         author: props.user.userName,
         authorId: props.user.id,

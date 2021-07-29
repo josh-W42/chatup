@@ -1,7 +1,7 @@
 import { Chat, User } from "../actions";
 
 export const AnonymousUser: User = {
-  id: -1,
+  id: "UNKNOWN",
   userName: "",
   passWord: "",
   chats: [],
@@ -10,7 +10,7 @@ export const AnonymousUser: User = {
 };
 
 export const emptyChat: Chat = {
-  id: -1,
+  id: "UNKNOWN",
   name: "",
   imageUrl: "broken",
   lastUpdated: new Date().getTime(),

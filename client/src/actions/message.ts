@@ -1,8 +1,8 @@
 export interface Message {
-  id: number;
+  id: string;
   content: string;
   author: string;
-  authorId: number;
+  authorId: string;
   authorImageUrl: string;
   sentGraphic: boolean;
   graphicUrls: string[];

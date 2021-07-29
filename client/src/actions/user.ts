@@ -5,7 +5,7 @@ import { AuthPayload, ActionTypes, ChatPartial } from "./index";
 const { REACT_APP_SERVER_URL } = process.env;
 
 export interface User {
-  id: number;
+  id: string;
   userName: string;
   passWord: string;
   chats: ChatPartial[];
@@ -30,7 +30,7 @@ export interface LoginUserAction {
 
 export interface DeleteUserAction {
   type: ActionTypes.deleteUser;
-  payload: number;
+  payload: string;
 }
 
 export interface FetchUserAction {
