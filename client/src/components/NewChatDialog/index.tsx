@@ -22,6 +22,7 @@ import {
   Typography,
   Avatar,
 } from "@material-ui/core";
+import { ChatPartialPayload, postChatPartial } from "../../adapters";
 
 interface DialogProps {
   newChatOpen: boolean;
@@ -62,17 +63,22 @@ const _NewChatDialog = (props: DialogProps): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newChat: ChatPartial = {
-      id: Math.floor(Math.random() * 100),
+    const newChat: ChatPartialPayload = {
       name: values.name,
       imageUrl: values.imageUrl,
-      lastUpdated: new Date(),
-      lastMessage: "",
     };
 
-    props.addChatPartial(newChat);
+    postChatPartial(newChat, onPostFailure, onPostSuccess);
     props.closeNewChat();
     reset();
+  };
+
+  const onPostSuccess = (newChat: ChatPartial) => {
+    props.addChatPartial(newChat);
+  };
+
+  const onPostFailure = () => {
+    // trigger a warning notification
   };
 
   const reset = () => {
