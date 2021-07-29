@@ -127,18 +127,21 @@ const signUp = async (req: RequestWithBody, res: Response) => {
         });
 
         // Save the user
-        await userRef.update(
+        userRef.update(
           {
             [`${newUser.userName}`]: newUser,
           },
           (err) => {
-            if (err) return handleError(err, 500, res);
-
-            return res.status(201).json({
-              created: { ...newUser, passWord: "", chats: [] },
-            });
+            if (err) {
+              // in the event of a failure, remove the previous resource.
+              db.ref("/membersToChats").child(`${newUser.userName}`).remove();
+            }
           }
         );
+
+        res.status(201).json({
+          created: { ...newUser, passWord: "", chats: [] },
+        });
       });
     });
   } catch (error) {

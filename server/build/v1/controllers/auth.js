@@ -174,30 +174,26 @@ var signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     bcrypt_1.hash(newUser_1.passWord, salt, function (error, hash) { return __awaiter(void 0, void 0, void 0, function () {
                         var _a, _b;
                         return __generator(this, function (_c) {
-                            switch (_c.label) {
-                                case 0:
-                                    if (error)
-                                        return [2 /*return*/, helper_1.handleError(error, 500, res)];
-                                    newUser_1.passWord = hash;
-                                    // initialize a member to chat resource
-                                    models_1.db.ref("/membersToChats").update((_a = {},
-                                        _a["" + newUser_1.userName] = "no chats",
-                                        _a));
-                                    // Save the user
-                                    return [4 /*yield*/, userRef.update((_b = {},
-                                            _b["" + newUser_1.userName] = newUser_1,
-                                            _b), function (err) {
-                                            if (err)
-                                                return helper_1.handleError(err, 500, res);
-                                            return res.status(201).json({
-                                                created: __assign(__assign({}, newUser_1), { passWord: "", chats: [] }),
-                                            });
-                                        })];
-                                case 1:
-                                    // Save the user
-                                    _c.sent();
-                                    return [2 /*return*/];
-                            }
+                            if (error)
+                                return [2 /*return*/, helper_1.handleError(error, 500, res)];
+                            newUser_1.passWord = hash;
+                            // initialize a member to chat resource
+                            models_1.db.ref("/membersToChats").update((_a = {},
+                                _a["" + newUser_1.userName] = "no chats",
+                                _a));
+                            // Save the user
+                            userRef.update((_b = {},
+                                _b["" + newUser_1.userName] = newUser_1,
+                                _b), function (err) {
+                                if (err) {
+                                    // in the event of a failure, remove the previous resource.
+                                    models_1.db.ref("/membersToChats").child("" + newUser_1.userName).remove();
+                                }
+                            });
+                            res.status(201).json({
+                                created: __assign(__assign({}, newUser_1), { passWord: "", chats: [] }),
+                            });
+                            return [2 /*return*/];
                         });
                     }); });
                 });
