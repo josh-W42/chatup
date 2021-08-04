@@ -43,22 +43,20 @@ var io = new socket_io_1.Server(server, {
 io.on("connection", function (socket) {
     // console.log(`connected: $${socket.id}`);
     socket.on("leave room", function (data) {
+        // console.log(`socket: ${socket.id} left room: ${data.id}`);
         var id = data.id;
         socket.leave(id);
     });
     socket.on("join room", function (data) {
-        console.log(data.id);
+        // console.log(`socket: ${socket.id} joined room: ${data.id}`);
         var id = data.id;
         socket.join(id);
     });
     socket.on("new message", function (data) {
-        // console.log(data.chatId);
-        // console.log(socket.rooms);
-        io.to(data.chatId).emit("update messages", data);
-        // socket.to(data.chatId).emit("new message", data);
+        socket.broadcast.to(data.chatId).emit("update messages", data);
     });
-    socket.on("disconnect", function () {
-        // console.log(`disconnect: ${socket.id}`);
-    });
+    // socket.on("disconnect", () => {
+    //   // console.log(`disconnect: ${socket.id}`);
+    // });
 });
-io.emit("message", new Date().toTimeString());
+// io.emit("message", new Date().toTimeString());
