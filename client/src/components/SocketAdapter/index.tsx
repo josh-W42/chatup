@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import io from "socket.io-client";
-import { Chat, Message, NewContentPayload, addMessage } from "../../actions";
+import { NewContentPayload, addMessage } from "../../actions";
 import { StoreState } from "../../reducers";
 
 const { REACT_APP_SOCKET_URL } = process.env;
@@ -27,25 +27,12 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
   const [oldChat, setOldChat] = useState("");
 
   useEffect(() => {
-    socket.on("connect", () => {
-      // console.log("connection established");
-    });
-
-    socket.on("disconnect", () => {
-      // console.log("connection terminated");
-    });
-
-    socket.on("message", (data) => {
-      // console.log(data);
-    });
-
     socket.on("update messages", (data: NewContentPayload) => {
       props.addMessage(data.message, data.chatId);
     });
 
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
+      socket.off("update messages");
     };
   }, []);
 

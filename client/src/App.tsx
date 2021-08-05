@@ -14,6 +14,7 @@ import { StoreState } from "./reducers";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./util/setAuthToken";
 import SocketAdapter from "./components/SocketAdapter";
+import NotificationContainer from "./components/NotificationContainer";
 
 interface AppProps {
   authorizeUser: typeof authorizeUser;
@@ -57,6 +58,7 @@ function _App(props: AppProps): JSX.Element {
         <Route path="/auth" component={AuthPage} />
         <Route path="/chats" component={ChatDashboard} />
       </Switch>
+      <NotificationContainer />
     </>
   );
 }
