@@ -5,21 +5,20 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  Divider,
   IconButton,
-  Typography,
   Tooltip,
 } from "@material-ui/core";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import { Logout } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { StoreState } from "../../reducers";
-import { User, unAuthorizeUser } from "../../actions";
+import { User, unAuthorizeUser, createNotification } from "../../actions";
 import setAuthToken from "../../util/setAuthToken";
 import { Link } from "react-router-dom";
 
 interface MenuProps {
   unAuthorizeUser: typeof unAuthorizeUser;
+  createNotification: typeof createNotification;
   user: User;
 }
 
@@ -38,6 +37,7 @@ const _MenuButton = (props: MenuProps): JSX.Element => {
     localStorage.removeItem("jwtToken");
     setAuthToken(null);
     props.unAuthorizeUser();
+    props.createNotification({ info: "Logout Successful", severity: "info" });
   };
 
   return (
@@ -115,6 +115,7 @@ const mapStateToProps = ({ user }: StoreState): { user: User } => {
 
 const MenuButton = connect(mapStateToProps, {
   unAuthorizeUser,
+  createNotification,
 })(_MenuButton);
 
 export default MenuButton;

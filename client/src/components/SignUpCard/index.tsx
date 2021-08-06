@@ -16,7 +16,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
-import { createUser, Credentials, authorizeUser } from "../../actions/";
+import {
+  createUser,
+  Credentials,
+  authorizeUser,
+  createNotification,
+} from "../../actions/";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 
@@ -33,6 +38,7 @@ interface SignUpCardProps {
   createUser: Function;
   isAuth: boolean;
   authorizeUser: typeof authorizeUser;
+  createNotification: typeof createNotification;
 }
 
 const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
@@ -118,14 +124,19 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     redirect();
   };
 
-  const onSignUpError = (): void => {
+  const onSignUpError = (message: string): void => {
     // trigger notification with warning message
+    props.createNotification({ info: message, severity: "error" });
   };
 
   const onSignUpSuccess = (): void => {
     // trigger notification with success message
     // if the user is logged in then run
     // props.authorizeUser();
+    props.createNotification({
+      info: "Sign up Successful",
+      severity: "success",
+    });
   };
 
   if (values.redirect) {
@@ -277,6 +288,7 @@ const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
 const SignUpCard = connect(mapStateToProps, {
   createUser,
   authorizeUser,
+  createNotification,
 })(_SignUpCard);
 
 export default SignUpCard;

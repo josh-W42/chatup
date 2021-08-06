@@ -68,7 +68,7 @@ export const fetchUser = (userInfo: AuthPayload, errorCallback: () => void) => {
 
 export const createUser = (
   newUser: Credentials,
-  errorCallback: () => void,
+  errorCallback: (message: string) => void,
   successCallback: () => void,
   formData?: FormData
 ) => {
@@ -81,7 +81,7 @@ export const createUser = (
       const response = await axios.post<
         Credentials,
         AxiosResponse<{ created: User }>
-      >(`${REACT_APP_SERVER_URL}/auth/signup`, newUser);
+      >(`${REACT_APP_SERVER_URL}auth/signup`, newUser);
 
       /*
         TODO - Access another route for updating a profile picture
@@ -103,14 +103,14 @@ export const createUser = (
       successCallback();
     } catch (error) {
       console.error(error);
-      errorCallback();
+      errorCallback("An Error Occurred, Username Might Be Taken. Try Again.");
     }
   };
 };
 
 export const loginUser = (
   userCredentials: Credentials,
-  errorCallback: () => void,
+  errorCallback: (message: string) => void,
   successCallback: () => void
 ) => {
   return async (dispatch: Dispatch<LoginUserAction>) => {
@@ -122,7 +122,7 @@ export const loginUser = (
       const response = await axios.post<
         Credentials,
         AxiosResponse<{ token: string; user: User }>
-      >(`${REACT_APP_SERVER_URL}/auth/login`, userCredentials);
+      >(`${REACT_APP_SERVER_URL}auth/login`, userCredentials);
 
       // store token locally
       localStorage.setItem("jwtToken", response.data.token);
@@ -136,7 +136,7 @@ export const loginUser = (
       successCallback();
     } catch (error) {
       console.error(error);
-      errorCallback();
+      errorCallback("UserName or Password Is Invalid");
     }
   };
 };

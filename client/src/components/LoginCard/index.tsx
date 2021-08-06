@@ -14,7 +14,12 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
-import { Credentials, loginUser, authorizeUser } from "../../actions";
+import {
+  Credentials,
+  loginUser,
+  authorizeUser,
+  createNotification,
+} from "../../actions";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 
@@ -29,6 +34,7 @@ interface LoginCardProps {
   isAuth: boolean;
   loginUser: Function;
   authorizeUser: typeof authorizeUser;
+  createNotification: typeof createNotification;
 }
 
 const _LoginCard = (props: LoginCardProps): JSX.Element => {
@@ -65,12 +71,14 @@ const _LoginCard = (props: LoginCardProps): JSX.Element => {
   };
 
   const onLoginSuccess = (): void => {
-    // trigger a success notification
+    // trigger a success notification and set the app state to logged in.
     props.authorizeUser();
+    props.createNotification({ info: "Login Successful", severity: "success" });
   };
 
-  const onLoginFailure = (): void => {
+  const onLoginFailure = (message: string): void => {
     // trigger a fail notification
+    props.createNotification({ info: message, severity: "error" });
   };
 
   const redirect = () => {
@@ -176,6 +184,7 @@ const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
 const LoginCard = connect(mapStateToProps, {
   loginUser,
   authorizeUser,
+  createNotification,
 })(_LoginCard);
 
 export default LoginCard;
