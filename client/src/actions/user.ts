@@ -49,7 +49,7 @@ export const fetchUser = (userInfo: AuthPayload, errorCallback: () => void) => {
       const response = await axios.get<
         AuthPayload,
         AxiosResponse<{ user: User }>
-      >(`${REACT_APP_SERVER_URL}/users/${userInfo.userName}`);
+      >(`${REACT_APP_SERVER_URL}users/${userInfo.userName}`);
 
       if (!response.data.user) {
         throw new Error("User No Returned");
@@ -81,7 +81,7 @@ export const createUser = (
       const response = await axios.post<
         Credentials,
         AxiosResponse<{ created: User }>
-      >(`${REACT_APP_SERVER_URL}/auth/signup`, newUser);
+      >(`${REACT_APP_SERVER_URL}auth/signup`, newUser);
 
       /*
         TODO - Access another route for updating a profile picture
@@ -122,7 +122,7 @@ export const loginUser = (
       const response = await axios.post<
         Credentials,
         AxiosResponse<{ token: string; user: User }>
-      >(`${REACT_APP_SERVER_URL}/auth/login`, userCredentials);
+      >(`${REACT_APP_SERVER_URL}auth/login`, userCredentials);
 
       // store token locally
       localStorage.setItem("jwtToken", response.data.token);
