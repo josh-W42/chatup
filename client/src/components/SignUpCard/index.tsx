@@ -14,6 +14,8 @@ import {
   IconButton,
   Avatar,
   Typography,
+  TextField,
+  FormHelperText,
 } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
 import {
@@ -32,6 +34,7 @@ interface SignUpState {
   showPassword: boolean;
   imageUrl: string;
   redirect: boolean;
+  redirectTo: string;
 }
 
 interface SignUpCardProps {
@@ -49,6 +52,7 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     showPassword: false,
     imageUrl: "",
     redirect: false,
+    redirectTo: "/auth/signup",
   });
 
   const handleChange =
@@ -80,19 +84,46 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     return new Blob();
   };
 
-  const redirect = () => {
+  const redirect = (url: string) => {
     setValues({
-      userName: "",
-      passWord: "",
-      confirmPassword: "",
-      showPassword: false,
-      imageUrl: "",
+      ...values,
       redirect: true,
+      redirectTo: url,
     });
   };
 
-  const isformValid = () => {
+  const isFormValid = () => {
+    const regex = /\W/;
+
+    if (regex.test(values.userName)) {
+      props.createNotification({
+        info: "Usernames Can't Contain Special Characters",
+        severity: "warning",
+      });
+      return false;
+    }
+
+    if (values.userName.length > 20) {
+      props.createNotification({
+        info: "Username Too Long, Please Shorten.",
+        severity: "warning",
+      });
+      return false;
+    }
+
+    if (values.passWord.length < 8) {
+      props.createNotification({
+        info: "Passwords Should Have At Least 8 Characters",
+        severity: "warning",
+      });
+      return false;
+    }
+
     if (values.passWord !== values.confirmPassword) {
+      props.createNotification({
+        info: "Passwords Are Not Equal.",
+        severity: "warning",
+      });
       return false;
     }
     return true;
@@ -101,7 +132,7 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!isformValid) {
+    if (!isFormValid()) {
       return;
     }
 
@@ -121,7 +152,19 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
       props.createUser(newUser, onSignUpError, onSignUpSuccess);
     }
 
-    redirect();
+    reset();
+  };
+
+  const reset = () => {
+    setValues({
+      userName: "",
+      passWord: "",
+      confirmPassword: "",
+      showPassword: false,
+      imageUrl: "",
+      redirect: false,
+      redirectTo: "/auth/signup",
+    });
   };
 
   const onSignUpError = (message: string): void => {
@@ -137,10 +180,11 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
       info: "Sign up Successful",
       severity: "success",
     });
+    redirect("/auth/login");
   };
 
   if (values.redirect) {
-    return <Redirect to="/chats" />;
+    return <Redirect to={values.redirectTo} />;
   }
 
   return (
@@ -152,7 +196,9 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
               <CardContent>
                 <h2>Sign Up</h2>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="userName">Username</InputLabel>
+                  <InputLabel required htmlFor="userName">
+                    Username
+                  </InputLabel>
                   <Input
                     required
                     aria-required
@@ -161,9 +207,14 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                     value={values.userName}
                     onChange={handleChange("userName")}
                   />
+                  <FormHelperText id="UserName Helper">
+                    Cannot Contain Special Characters, '%', '^', "$" etc
+                  </FormHelperText>
                 </FormControl>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="passWord">Password</InputLabel>
+                  <InputLabel required htmlFor="passWord">
+                    Password
+                  </InputLabel>
                   <Input
                     id="passWord"
                     required
@@ -183,9 +234,12 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                       </InputAdornment>
                     }
                   />
+                  <FormHelperText id="PasswordHelper">
+                    Must Be At Least 8 Characters
+                  </FormHelperText>
                 </FormControl>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="confirmPassword">
+                  <InputLabel required htmlFor="confirmPassword">
                     Confirm Password
                   </InputLabel>
                   <Input
