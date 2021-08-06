@@ -9,7 +9,13 @@ import {
 import SendIcon from "@material-ui/icons/Send";
 import React, { SetStateAction, useState } from "react";
 import { connect } from "react-redux";
-import { Chat, Message, addMessage, User } from "../../actions";
+import {
+  Chat,
+  Message,
+  addMessage,
+  User,
+  NewContentPayload,
+} from "../../actions";
 import { MessagePayload, postMessage } from "../../adapters";
 import { StoreState } from "../../reducers";
 import { emitSocketEvent } from "../SocketAdapter";
@@ -69,7 +75,11 @@ const _BottomActionBar = (props: ActionBarProps) => {
 
   const onPostSuccess = (newMessage: Message) => {
     props.addMessage(newMessage, props.chat.id);
-    emitSocketEvent("new message", { message: newMessage, chatId: props.chat.id });
+    const payload: NewContentPayload = {
+      message: newMessage,
+      chatId: props.chat.id,
+    };
+    emitSocketEvent("new message", payload);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
