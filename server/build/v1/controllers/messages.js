@@ -73,7 +73,12 @@ var createMessage = function (req, res) { return __awaiter(void 0, void 0, void 
                 });
                 // update the chat
                 models_1.db.ref("/chats/" + chatId).update({
-                    lastUpdated: new Date().getTime(),
+                    lastUpdated: newMessage.createdAt,
+                    lastMessage: newMessage.content,
+                });
+                // update another chat reference
+                models_1.db.ref("/membersToChats/" + userName + "/" + chatId).update({
+                    lastUpdated: newMessage.createdAt,
                     lastMessage: newMessage.content,
                 });
                 return [3 /*break*/, 4];

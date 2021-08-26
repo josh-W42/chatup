@@ -1,5 +1,12 @@
 import { useEffect } from "react";
-import { Chat, fetchChat, Message, User, joinChat } from "../../actions";
+import {
+  Chat,
+  fetchChat,
+  Message,
+  User,
+  joinChat,
+  createNotification,
+} from "../../actions";
 import { addTimeElement } from "../../util/time";
 import { Redirect, useRouteMatch } from "react-router-dom";
 import {
@@ -15,6 +22,7 @@ import {
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 import { useState } from "react";
+import { emitSocketEvent } from "../SocketAdapter";
 
 interface URLParams {
   id?: string;
@@ -24,6 +32,7 @@ interface MessageListProps {
   fetchChat: Function;
   chat: Chat;
   user: User;
+  createNotification: typeof createNotification;
   joinChat: typeof joinChat;
 }
 
@@ -51,10 +60,15 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
   const onFetchError = () => {
     // Trigger redirect and trigger warning notification
     setRedirect(true);
+    props.createNotification({
+      info: "Could Not Fetch Chat!",
+      severity: "error",
+    });
   };
 
   const onFetchSuccess = (id: string) => {
-    // props.joinChat(id);
+    props.joinChat(id);
+    emitSocketEvent("join room", { id });
   };
 
   const renderMessages = (): JSX.Element[] => {
@@ -123,6 +137,7 @@ const mapStateToProps = ({
 };
 
 const MessageList = connect(mapStateToProps, {
+  createNotification,
   fetchChat,
   joinChat,
 })(_MessageList);

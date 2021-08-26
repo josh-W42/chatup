@@ -14,9 +14,16 @@ import {
   IconButton,
   Avatar,
   Typography,
+  TextField,
+  FormHelperText,
 } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
-import { createUser, Credentials, authorizeUser } from "../../actions/";
+import {
+  createUser,
+  Credentials,
+  authorizeUser,
+  createNotification,
+} from "../../actions/";
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 
@@ -27,12 +34,20 @@ interface SignUpState {
   showPassword: boolean;
   imageUrl: string;
   redirect: boolean;
+  redirectTo: string;
+}
+
+interface SignUpErrorStates {
+  userName: boolean;
+  passWord: boolean;
+  confirmPassword: boolean;
 }
 
 interface SignUpCardProps {
   createUser: Function;
   isAuth: boolean;
   authorizeUser: typeof authorizeUser;
+  createNotification: typeof createNotification;
 }
 
 const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
@@ -43,11 +58,41 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     showPassword: false,
     imageUrl: "",
     redirect: false,
+    redirectTo: "/auth/signup",
   });
+
+  const [errorStates, setErrorStates] = useState<SignUpErrorStates>({
+    userName: false,
+    passWord: false,
+    confirmPassword: false,
+  });
+
+  const handleErrorChange = (
+    prop: keyof SignUpErrorStates,
+    newState: boolean
+  ) => {
+    setErrorStates({ ...errorStates, [prop]: newState });
+  };
 
   const handleChange =
     (prop: keyof SignUpState) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (prop === "passWord") {
+        if (event.target.value.length < 8) {
+          handleErrorChange("passWord", true);
+        } else {
+          handleErrorChange("passWord", false);
+        }
+      }
+
+      if (prop === "confirmPassword") {
+        if (event.target.value !== values.passWord) {
+          handleErrorChange("confirmPassword", true);
+        } else {
+          handleErrorChange("confirmPassword", false);
+        }
+      }
+
       setValues({ ...values, [prop]: event.target.value });
     };
 
@@ -74,19 +119,46 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
     return new Blob();
   };
 
-  const redirect = () => {
+  const redirect = (url: string) => {
     setValues({
-      userName: "",
-      passWord: "",
-      confirmPassword: "",
-      showPassword: false,
-      imageUrl: "",
+      ...values,
       redirect: true,
+      redirectTo: url,
     });
   };
 
-  const isformValid = () => {
+  const isFormValid = () => {
+    const regex = /\W/;
+
+    if (regex.test(values.userName)) {
+      props.createNotification({
+        info: "Usernames Can't Contain Special Characters",
+        severity: "warning",
+      });
+      return false;
+    }
+
+    if (values.userName.length > 20) {
+      props.createNotification({
+        info: "Username Too Long, Please Shorten.",
+        severity: "warning",
+      });
+      return false;
+    }
+
+    if (values.passWord.length < 8) {
+      props.createNotification({
+        info: "Passwords Should Have At Least 8 Characters",
+        severity: "warning",
+      });
+      return false;
+    }
+
     if (values.passWord !== values.confirmPassword) {
+      props.createNotification({
+        info: "Passwords Are Not Equal.",
+        severity: "warning",
+      });
       return false;
     }
     return true;
@@ -95,7 +167,7 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!isformValid) {
+    if (!isFormValid()) {
       return;
     }
 
@@ -115,21 +187,39 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
       props.createUser(newUser, onSignUpError, onSignUpSuccess);
     }
 
-    redirect();
+    reset();
   };
 
-  const onSignUpError = (): void => {
+  const reset = () => {
+    setValues({
+      userName: "",
+      passWord: "",
+      confirmPassword: "",
+      showPassword: false,
+      imageUrl: "",
+      redirect: false,
+      redirectTo: "/auth/signup",
+    });
+  };
+
+  const onSignUpError = (message: string): void => {
     // trigger notification with warning message
+    props.createNotification({ info: message, severity: "error" });
   };
 
   const onSignUpSuccess = (): void => {
     // trigger notification with success message
     // if the user is logged in then run
     // props.authorizeUser();
+    props.createNotification({
+      info: "Sign up Successful",
+      severity: "success",
+    });
+    redirect("/auth/login");
   };
 
   if (values.redirect) {
-    return <Redirect to="/chats" />;
+    return <Redirect to={values.redirectTo} />;
   }
 
   return (
@@ -141,24 +231,44 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
               <CardContent>
                 <h2>Sign Up</h2>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="userName">Username</InputLabel>
+                  <InputLabel
+                    required
+                    error={errorStates.userName}
+                    htmlFor="userName"
+                  >
+                    Username
+                  </InputLabel>
                   <Input
                     required
                     aria-required
                     id="userName"
                     type="text"
+                    error={errorStates.userName}
                     value={values.userName}
                     onChange={handleChange("userName")}
                   />
+                  <FormHelperText
+                    error={errorStates.userName}
+                    id="UserName Helper"
+                  >
+                    Cannot Contain Special Characters, '%', '^', "$" etc
+                  </FormHelperText>
                 </FormControl>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="passWord">Password</InputLabel>
+                  <InputLabel
+                    required
+                    error={errorStates.passWord}
+                    htmlFor="passWord"
+                  >
+                    Password
+                  </InputLabel>
                   <Input
                     id="passWord"
                     required
                     aria-required
                     type={values.showPassword ? "text" : "passWord"}
                     value={values.passWord}
+                    error={errorStates.passWord}
                     onChange={handleChange("passWord")}
                     endAdornment={
                       <InputAdornment position="end">
@@ -172,9 +282,19 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                       </InputAdornment>
                     }
                   />
+                  <FormHelperText
+                    error={errorStates.passWord}
+                    id="PasswordHelper"
+                  >
+                    Must Be At Least 8 Characters
+                  </FormHelperText>
                 </FormControl>
                 <FormControl sx={{ m: 2, width: "90%" }} variant="standard">
-                  <InputLabel htmlFor="confirmPassword">
+                  <InputLabel
+                    required
+                    error={errorStates.confirmPassword}
+                    htmlFor="confirmPassword"
+                  >
                     Confirm Password
                   </InputLabel>
                   <Input
@@ -183,6 +303,7 @@ const _SignUpCard = (props: SignUpCardProps): JSX.Element => {
                     value={values.confirmPassword}
                     required
                     aria-required
+                    error={errorStates.confirmPassword}
                     onChange={handleChange("confirmPassword")}
                     endAdornment={
                       <InputAdornment position="end">
@@ -277,6 +398,7 @@ const mapStateToProps = ({ isAuth }: StoreState): { isAuth: boolean } => {
 const SignUpCard = connect(mapStateToProps, {
   createUser,
   authorizeUser,
+  createNotification,
 })(_SignUpCard);
 
 export default SignUpCard;

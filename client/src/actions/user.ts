@@ -68,7 +68,7 @@ export const fetchUser = (userInfo: AuthPayload, errorCallback: () => void) => {
 
 export const createUser = (
   newUser: Credentials,
-  errorCallback: () => void,
+  errorCallback: (message: string) => void,
   successCallback: () => void,
   formData?: FormData
 ) => {
@@ -103,14 +103,14 @@ export const createUser = (
       successCallback();
     } catch (error) {
       console.error(error);
-      errorCallback();
+      errorCallback("An Error Occurred, Username Might Be Taken. Try Again.");
     }
   };
 };
 
 export const loginUser = (
   userCredentials: Credentials,
-  errorCallback: () => void,
+  errorCallback: (message: string) => void,
   successCallback: () => void
 ) => {
   return async (dispatch: Dispatch<LoginUserAction>) => {
@@ -136,7 +136,7 @@ export const loginUser = (
       successCallback();
     } catch (error) {
       console.error(error);
-      errorCallback();
+      errorCallback("UserName or Password Is Invalid");
     }
   };
 };

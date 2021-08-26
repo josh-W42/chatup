@@ -39,7 +39,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.toArray = exports.getAllMessages = exports.getAllChats = exports.handleError = void 0;
 var models_1 = require("../models");
 var handleError = function (err, statusCode, res) {
-    console.error(err.message);
     res.status(statusCode).json({
         message: err.message,
     });

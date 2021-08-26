@@ -36,7 +36,13 @@ const createMessage = async (req: RequestWithBody, res: Response) => {
 
     // update the chat
     db.ref(`/chats/${chatId}`).update({
-      lastUpdated: new Date().getTime(),
+      lastUpdated: newMessage.createdAt,
+      lastMessage: newMessage.content,
+    });
+
+    // update another chat reference
+    db.ref(`/membersToChats/${userName}/${chatId}`).update({
+      lastUpdated: newMessage.createdAt,
       lastMessage: newMessage.content,
     });
   } catch (error) {

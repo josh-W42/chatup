@@ -47,21 +47,19 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   // console.log(`connected: $${socket.id}`);
-  // socket.on("leave room", (data: JoinLeavePayload) => {
-  //   const id: string = data.id;
-  //   socket.leave(id);
-  // });
-  // socket.on("join room", (data: JoinLeavePayload) => {
-  //   console.log(data.id);
-  //   const id: string = data.id;
-  //   socket.join(id);
-  // });
-  // socket.on("new message", (data: NewContentPayload) => {
-  //   // console.log(data.chatId);
-  //   // console.log(socket.rooms);
-  //   io.to(data.chatId).emit("update messages", data);
-  //   // socket.to(data.chatId).emit("new message", data);
-  // });
+  socket.on("leave room", (data: JoinLeavePayload) => {
+    // console.log(`socket: ${socket.id} left room: ${data.id}`);
+    const id: string = data.id;
+    socket.leave(id);
+  });
+  socket.on("join room", (data: JoinLeavePayload) => {
+    // console.log(`socket: ${socket.id} joined room: ${data.id}`);
+    const id: string = data.id;
+    socket.join(id);
+  });
+  socket.on("new message", (data: NewContentPayload) => {
+    socket.broadcast.to(data.chatId).emit("update messages", data);
+  });
   // socket.on("disconnect", () => {
   //   // console.log(`disconnect: ${socket.id}`);
   // });
