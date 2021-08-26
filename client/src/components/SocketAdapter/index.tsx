@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import io from "socket.io-client";
-import { NewContentPayload, addMessage } from "../../actions";
+import { NewContentPayload, addMessage, Chat } from "../../actions";
 import { StoreState } from "../../reducers";
 
 const { REACT_APP_SOCKET_URL } = process.env;
@@ -15,7 +15,7 @@ const socket = io(REACT_APP_SOCKET_URL as string, {
 
 interface SocketAdapterProps {
   isAuth: boolean;
-  activeChat: string;
+  chat: Chat;
   addMessage: typeof addMessage;
 }
 
@@ -38,10 +38,10 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
 
   useEffect(() => {
     socket.emit("leave room", { id: oldChat });
-    socket.emit("join room", { id: props.activeChat });
+    socket.emit("join room", { id: props.chat.id });
 
-    setOldChat(props.activeChat);
-  }, [props.activeChat]);
+    setOldChat(props.chat.id);
+  }, [props.chat]);
 
   useEffect(() => {
     if (props.isAuth && socket.disconnected) {
@@ -56,9 +56,9 @@ const _SocketAdapter = (props: SocketAdapterProps): JSX.Element => {
 
 const mapStateToProps = ({
   isAuth,
-  activeChat,
-}: StoreState): { isAuth: boolean; activeChat: string } => {
-  return { isAuth, activeChat };
+  chat,
+}: StoreState): { isAuth: boolean; chat: Chat } => {
+  return { isAuth, chat };
 };
 
 const SocketAdapter = connect(mapStateToProps, { addMessage })(_SocketAdapter);

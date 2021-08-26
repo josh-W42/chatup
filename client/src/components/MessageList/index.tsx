@@ -22,6 +22,7 @@ import {
 import { StoreState } from "../../reducers";
 import { connect } from "react-redux";
 import { useState } from "react";
+import { emitSocketEvent } from "../SocketAdapter";
 
 interface URLParams {
   id?: string;
@@ -67,6 +68,7 @@ const _MessageList = (props: MessageListProps): JSX.Element => {
 
   const onFetchSuccess = (id: string) => {
     props.joinChat(id);
+    emitSocketEvent("join room", { id });
   };
 
   const renderMessages = (): JSX.Element[] => {
